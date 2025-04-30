@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@fastify/rate-limit": "^10.2.2",
     "@fastify/swagger": "^9.5.0",
     "@fastify/swagger-ui": "^5.2.2",
     "@planetscale/database": "^1.19.0",
