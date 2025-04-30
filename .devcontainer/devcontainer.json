@@ -1,0 +1,37 @@
+{
+    "name": "Backend Dev Container",
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+    "features": {},
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "dbaeumer.vscode-eslint",
+          "esbenp.prettier-vscode",
+          "christian-kohler.npm-intellisense",
+          "christian-kohler.path-intellisense",
+          "humao.rest-client",
+          "yokawasa.jwt-debugger",
+          "mikestead.dotenv",
+          "mtxr.sqltools",
+          "mtxr.sqltools-driver-mysql",
+          "emilast.logfilehighlighter",
+          "litleleprikon.socket-io-vscode",
+          "ms-vsliveshare.vsliveshare",
+          "xabikos.JavaScriptSnippets",
+          "Orta.vscode-jest",
+          "aaron-bond.better-comments"
+        ]
+      }
+    },
+    "postCreateCommand": "npm install",
+    "forwardPorts": [
+      3000
+    ],
+    "portsAttributes": {
+      "3000": {
+        "label": "Fastify API",
+        "onAutoForward": "notify"
+      }
+    },
+    "remoteUser": "node"
+  }
