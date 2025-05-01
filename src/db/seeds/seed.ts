@@ -21,28 +21,6 @@ async function seed() {
   try {
     console.log('🌱 Starting database seeding...');
 
-    // Insert super admin user
-    await db.insert(users).values({
-      id: idGenerator(),
-      username: 'AaronAdmin', // assuming you have this field
-      email: 'stanley.aaron.m@gmail.com',
-      passwordHash: '$2b$12$vxq.0Q3oujpfxCY/HoOWkOEQVjMKdsWx9ljSNa8KZeiJXhkKvusKC',
-      roleId: 'superadmin', // or reference correct role ID
-      displayName: 'Aaron Stanley',
-    });
-    console.log('✅ Inserted super admin user');
-
-    // Insert admin user
-    await db.insert(users).values({
-      id: idGenerator(),
-      username: 'admin', // assuming you have this field
-      email: 'admin@example.com',
-      passwordHash: '$2b$12$Wxv2nL/TM01WBIhJTQtRouRgj0xmoeSx6KyoEuoEEHbB7FCLjaEMy',
-      roleId: 'admin', // or reference correct role ID
-      displayName: 'Admin User',
-    });
-    console.log('✅ Inserted admin user');
-
     // Insert base languages
     await db.insert(languages).values([
       { id: idGenerator(), name: 'English', code: 'en' },
