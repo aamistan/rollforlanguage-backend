@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import mysql from 'mysql2/promise';
 import { drizzle } from 'drizzle-orm/mysql2';
-import { roles, users } from '../schema/core';
+import { users } from '../schema/core';
 import { languages } from '../schema/lessons';
 import { idGenerator } from '../../utils/idGenerator';
 
