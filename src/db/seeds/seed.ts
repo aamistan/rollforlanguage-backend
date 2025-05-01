@@ -10,7 +10,10 @@ async function seed() {
     host: process.env.DATABASE_HOST,
     user: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME, // make sure this is set in .env!
+    database: process.env.DATABASE_NAME,
+    ssl: {
+      rejectUnauthorized: true,
+    },
   });
 
   const db = drizzle(pool);
