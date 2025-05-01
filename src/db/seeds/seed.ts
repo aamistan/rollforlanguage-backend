@@ -21,15 +21,6 @@ async function seed() {
   try {
     console.log('🌱 Starting database seeding...');
 
-    // Insert base roles
-    await db.insert(roles).values([
-      { id: idGenerator(), name: 'Super Admin', description: 'Platform super administrator with full access' },
-      { id: idGenerator(), name: 'Admin', description: 'Platform administrator' },
-      { id: idGenerator(), name: 'Teacher', description: 'Teacher user' },
-      { id: idGenerator(), name: 'Student', description: 'Student user' },
-    ]);
-    console.log('✅ Inserted roles');
-
     // Insert super admin user
     await db.insert(users).values({
       id: idGenerator(),
