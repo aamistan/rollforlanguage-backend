@@ -1,65 +1,66 @@
-// src/db/seeds/seed.ts
-
 import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/planetscale-serverless';
-import { connect } from '@planetscale/database';
-import { generateId } from '../utils/idGenerator';
+import mysql from 'mysql2/promise';
+import { drizzle } from 'drizzle-orm/mysql2';
 import { roles, users } from '../schema/core';
-import { languages } from '../schema/lessons'; // adjust if located elsewhere
-
-const connection = connect({
-  host: process.env.DATABASE_HOST,
-  username: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
-});
-
-const db = drizzle(connection);
+import { languages } from '../schema/lessons';
+import { idGenerator } from '../../utils/idGenerator';
 
 async function seed() {
+  const pool = mysql.createPool({
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USERNAME,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME, // make sure this is set in .env!
+  });
+
+  const db = drizzle(pool);
+
   try {
     console.log('🌱 Starting database seeding...');
 
     // Insert base roles
     await db.insert(roles).values([
-      { id: generateId(), name: 'Super Admin', description: 'Platform super administrator with full access' },
-      { id: generateId(), name: 'Admin', description: 'Platform administrator' },
-      { id: generateId(), name: 'Teacher', description: 'Teacher user' },
-      { id: generateId(), name: 'Student', description: 'Student user' },
+      { id: idGenerator(), name: 'Super Admin', description: 'Platform super administrator with full access' },
+      { id: idGenerator(), name: 'Admin', description: 'Platform administrator' },
+      { id: idGenerator(), name: 'Teacher', description: 'Teacher user' },
+      { id: idGenerator(), name: 'Student', description: 'Student user' },
     ]);
     console.log('✅ Inserted roles');
 
-    // Insert super admin user (you!)
+    // Insert super admin user
     await db.insert(users).values({
-      id: generateId(),
-      username: 'your-username-here', // replace with your actual username
-      email: 'your-email@example.com', // replace with your real email
-      passwordHash: 'supersecurehashedpassword', // replace with a properly hashed password
-      roleId: 'superadmin', // must match the actual id inserted above
-      displayName: 'Super Admin User',
+      id: idGenerator(),
+      username: 'AaronAdmi', // assuming you have this field
+      email: 'stanley.aaron.m@gmail.com',
+      passwordHash: '$2b$12$vxq.0Q3oujpfxCY/HoOWkOEQVjMKdsWx9ljSNa8KZeiJXhkKvusKC',
+      roleId: 'superadmin', // or reference correct role ID
+      displayName: 'Aaron Stanley',
     });
     console.log('✅ Inserted super admin user');
 
     // Insert admin user
     await db.insert(users).values({
-      id: generateId(),
-      username: 'adminuser',
+      id: idGenerator(),
+      username: 'admin', // assuming you have this field
       email: 'admin@example.com',
-      passwordHash: 'hashedpassword123', // placeholder; replace securely
-      roleId: 'admin',
+      passwordHash: '$2b$12$Wxv2nL/TM01WBIhJTQtRouRgj0xmoeSx6KyoEuoEEHbB7FCLjaEMy',
+      roleId: 'admin', // or reference correct role ID
       displayName: 'Admin User',
     });
     console.log('✅ Inserted admin user');
 
     // Insert base languages
     await db.insert(languages).values([
-      { id: generateId(), name: 'English', code: 'en' },
-      { id: generateId(), name: 'German', code: 'de' },
+      { id: idGenerator(), name: 'English', code: 'en' },
+      { id: idGenerator(), name: 'German', code: 'de' },
     ]);
     console.log('✅ Inserted languages');
 
     console.log('🌱 Seeding complete!');
   } catch (error) {
     console.error('❌ Seeding error:', error);
+  } finally {
+    await pool.end(); // close the pool when done
   }
 }
 

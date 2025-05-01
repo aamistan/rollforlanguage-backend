@@ -6,4 +6,4 @@ async function hashPassword(plainTextPassword: string) {
   console.log(`Your hashed password: ${hash}`);
 }
 
-hashPassword('blackForest$cheRRy05cake&'); // replace with your actual password
+hashPassword('placeHolderPassword'); // replace with your actual password
