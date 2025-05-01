@@ -16,7 +16,8 @@ export const roles = mysqlTable('roles', {
 
 // Users table
 export const users = mysqlTable('users', {
-  id: varchar('id', { length: 36 }).primaryKey(),
+  id: varchar('id', { length: 36 }).primaryKey(),                    // system-generated unique ID
+  username: varchar('username', { length: 100 }).notNull().unique(), // user-chosen unique username
   email: varchar('email', { length: 255 }).notNull().unique(),
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
   roleId: varchar('role_id', { length: 36 }).notNull(),
