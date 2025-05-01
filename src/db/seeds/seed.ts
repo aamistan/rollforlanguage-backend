@@ -30,7 +30,7 @@ async function seed() {
     // Insert super admin user
     await db.insert(users).values({
       id: idGenerator(),
-      username: 'AaronAdmi', // assuming you have this field
+      username: 'AaronAdmin', // assuming you have this field
       email: 'stanley.aaron.m@gmail.com',
       passwordHash: '$2b$12$vxq.0Q3oujpfxCY/HoOWkOEQVjMKdsWx9ljSNa8KZeiJXhkKvusKC',
       roleId: 'superadmin', // or reference correct role ID
