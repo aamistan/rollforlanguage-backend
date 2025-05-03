@@ -1,5 +1,8 @@
 // src/services/auth.service.ts
 import bcrypt from 'bcrypt';
+import { db } from '../db';
+import { users } from '../db/schema/core';
+import { idGenerator } from '../utils/idGenerator';
 
 const SALT_ROUNDS = 12;
 
@@ -23,4 +26,35 @@ export async function verifyPassword(
   hash: string
 ): Promise<boolean> {
   return bcrypt.compare(plainTextPassword, hash);
+}
+
+/**
+ * Create a new user in the database.
+ * @param email, username, password
+ * @returns created user object
+ */
+export async function createUser({
+  email,
+  username,
+  password,
+}: {
+  email: string;
+  username: string;
+  password: string;
+}) {
+  const hashedPassword = await hashPassword(password);
+
+  const newUser = {
+    id: idGenerator(16),
+    email,
+    username,
+    passwordHash: hashedPassword,
+    roleId: 'student', // default role
+    isVerified: false,
+    isActive: true,
+  };
+
+  await db.insert(users).values(newUser);
+
+  return newUser;
 }
