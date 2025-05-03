@@ -22,13 +22,13 @@ export const users = mysqlTable('users', {
   roleId: varchar('role_id', { length: 36 }).notNull(),
   username: varchar('username', { length: 100 }).notNull().unique(),
   displayName: varchar('display_name', { length: 100 }),
-  genderIdentity: varchar('gender_identity', { length: 100 }),  // newly added
-  pronouns: varchar('pronouns', { length: 100 }),              // newly added
+  genderIdentity: varchar('gender_identity', { length: 100 }),
+  pronouns: varchar('pronouns', { length: 100 }),
+  isVerified: boolean('is_verified').default(false),   // <--- NEW
+  isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
-  isActive: boolean('is_active').default(true),
 });
-
 
 // Login Sessions table
 export const loginSessions = mysqlTable('login_sessions', {
