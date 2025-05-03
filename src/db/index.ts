@@ -9,6 +9,9 @@ const pool = mysql.createPool({
   user: process.env.DATABASE_USERNAME,
   database: process.env.DATABASE_NAME,
   password: process.env.DATABASE_PASSWORD,
+  ssl: {
+    rejectUnauthorized: true,
+  },
 });
 
 export const db: MySql2Database = drizzle(pool);
