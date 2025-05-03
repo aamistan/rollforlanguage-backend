@@ -16,16 +16,19 @@ export const roles = mysqlTable('roles', {
 
 // Users table
 export const users = mysqlTable('users', {
-  id: varchar('id', { length: 36 }).primaryKey(),                    // system-generated unique ID
-  username: varchar('username', { length: 100 }).notNull().unique(), // user-chosen unique username
+  id: varchar('id', { length: 36 }).primaryKey(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
   roleId: varchar('role_id', { length: 36 }).notNull(),
+  username: varchar('username', { length: 100 }).notNull().unique(),
   displayName: varchar('display_name', { length: 100 }),
+  genderIdentity: varchar('gender_identity', { length: 100 }),  // newly added
+  pronouns: varchar('pronouns', { length: 100 }),              // newly added
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
   isActive: boolean('is_active').default(true),
 });
+
 
 // Login Sessions table
 export const loginSessions = mysqlTable('login_sessions', {
