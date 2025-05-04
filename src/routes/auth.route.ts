@@ -7,13 +7,15 @@ import {
   logoutHandler,
   globalLogoutHandler,
 } from '../controllers/auth.controller';
+import fromZodSchema from 'zod-to-json-schema';
+import { signupSchema, loginSchema } from '../schemas/auth.schema';
 
 export async function authRoutes(server: FastifyInstance) {
   server.post('/signup', {
     schema: {
       description: 'Create a new user account',
       tags: ['Auth'],
-      body: { type: 'object' }, // We can wire this to zod later
+      body: fromZodSchema(signupSchema),
       response: {
         201: {
           description: 'User created successfully',
@@ -28,7 +30,7 @@ export async function authRoutes(server: FastifyInstance) {
     schema: {
       description: 'Log in with email and password',
       tags: ['Auth'],
-      body: { type: 'object' },
+      body: fromZodSchema(loginSchema),
       response: {
         200: {
           description: 'Successful login with JWT token',
@@ -43,7 +45,13 @@ export async function authRoutes(server: FastifyInstance) {
     schema: {
       description: 'Refresh access token using refresh token',
       tags: ['Auth'],
-      body: { type: 'object' },
+      body: {
+        type: 'object',
+        properties: {
+          userId: { type: 'string' },
+        },
+        required: ['userId'],
+      },
       response: {
         200: {
           description: 'New access token issued',
@@ -58,7 +66,13 @@ export async function authRoutes(server: FastifyInstance) {
     schema: {
       description: 'Log out of the current session (invalidate refresh token)',
       tags: ['Auth'],
-      body: { type: 'object' },
+      body: {
+        type: 'object',
+        properties: {
+          userId: { type: 'string' },
+        },
+        required: ['userId'],
+      },
       response: {
         200: {
           description: 'Successfully logged out',
@@ -73,7 +87,13 @@ export async function authRoutes(server: FastifyInstance) {
     schema: {
       description: 'Log out from all sessions (invalidate all refresh tokens)',
       tags: ['Auth'],
-      body: { type: 'object' },
+      body: {
+        type: 'object',
+        properties: {
+          userId: { type: 'string' },
+        },
+        required: ['userId'],
+      },
       response: {
         200: {
           description: 'Successfully logged out from all sessions',
