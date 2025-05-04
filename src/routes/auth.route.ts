@@ -34,6 +34,15 @@ export async function authRoutes(server: FastifyInstance) {
             },
           },
           required: ['message', 'user'],
+          example: {
+            message: 'User created successfully',
+            user: {
+              id: 'abc123',
+              email: 'user@example.com',
+              username: 'mycoolusername',
+              roleId: 'student',
+            },
+          },
         },
       },
     },
@@ -53,6 +62,9 @@ export async function authRoutes(server: FastifyInstance) {
             token: { type: 'string' },
           },
           required: ['token'],
+          example: {
+            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+          },
         },
       },
     },
@@ -79,6 +91,9 @@ export async function authRoutes(server: FastifyInstance) {
             token: { type: 'string' },
           },
           required: ['token'],
+          example: {
+            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+          },
         },
       },
     },
@@ -105,6 +120,9 @@ export async function authRoutes(server: FastifyInstance) {
             message: { type: 'string' },
           },
           required: ['message'],
+          example: {
+            message: 'Logged out successfully',
+          },
         },
       },
     },
@@ -131,6 +149,9 @@ export async function authRoutes(server: FastifyInstance) {
             message: { type: 'string' },
           },
           required: ['message'],
+          example: {
+            message: 'Logged out from all sessions',
+          },
         },
       },
     },
