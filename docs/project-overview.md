@@ -1,4 +1,9 @@
-# 🏰 **Roll for Language Frontend: Project Overview**
+Absolutely! Here’s your **updated and expanded backend project overview** reflecting everything we accomplished so far in this chat:
+
+---
+
+````markdown
+# 🏰 **Roll for Language Backend: Project Overview**
 
 > *“We build not for today, but for tomorrow and beyond.”*
 
@@ -6,58 +11,43 @@
 
 ## 🌟 **Project Purpose & Vision**
 
-The Roll for Language frontend is a modular, scalable Vue 3 application designed to deliver an immersive, gamified language-learning experience. Built for global deployment, it integrates responsive layouts, internationalization, real-time features, and continuous deployment pipelines — all guided by a forward-thinking clean architecture philosophy.
+The Roll for Language backend is a modular, scalable Node.js + Fastify system designed to power an immersive, RPG-style language-learning platform.  
+It handles user management, authentication, real-time features, multilingual support, and integration with a modern frontend, all crafted with long-term maintainability and future expansions in mind.
 
 ---
 
 ## 🏹 **Guiding Mantra**
 
-> Every component, script, and deployment decision is made to support long-term growth, modularity, and maintainability. We don’t just code for today’s needs; we architect for tomorrow’s expansions — scalable, international, and game-ready.
+> Every module, service, and deployment choice is made to future-proof the platform, ensuring scalability, security, and adaptability as the product evolves.
 
 1. We build clean code.
 2. We build optimized code.
-3. We build using best practices.
-4. We build modernly.
-5. We write our wish list of tools/components/features…then make it so!
-We ask the questions:
-What are the must-haves? What are the should-haves? What are the would-be-nice-to-haves?
-After we answer those questions, we include all of them! We build not for today, but for tomorrow and beyond.
+3. We follow best practices.
+4. We use modern architectures.
+5. We design for growth, not just today’s needs.
+
+We continuously ask:
+✅ What are the must-haves?  
+✅ What are the should-haves?  
+✅ What are the would-be-nice-to-haves?
+
+And we commit to building **all of them** thoughtfully.
 
 ---
 
-## 💻 **Tech Stack**
+## 💻 **Backend Tech Stack**
 
-Frontend Framework	Vue 3 + Vite + Tailwind CSS
-Frontend Hosting	Vercel
-Backend Language	Node.js
-Backend Hosting	Railway
-API Structure	Fastify
-Real-Time Layer	Socket.IO
-Database	PlanetScale
-Authentication	JWT
-Static Asset Hosting	Vercel + GitHub
-i18n Support	Vue I18n + JSON + Strapi (future)
-Audio Features	Web MediaRecorder + Backblaze B2
-Monitoring	Sentry + Vercel logs
-Analytics	PostHog
-
----
-# Backend Project Overview
-
-**Project:** Roll for Language — Fantasy RPG Language Learning Platform
-**Backend:** Node.js + Fastify + PlanetScale + Drizzle ORM + JWT + Socket.IO
-
-**Development Mantra:**
-
-> *We build not for today, but for tomorrow and beyond.*
-
----
-
-## Purpose
-
-This document tracks and summarizes each backend component completed in the project.
-It serves as a master reference and onboarding overview at the start of each new backend development phase or chat.
-It is meant to evolve — update it as new components are built.
+| Area                | Tech                                        |
+|---------------------|--------------------------------------------|
+| Runtime             | Node.js                                     |
+| Web Framework       | Fastify                                     |
+| Database            | PlanetScale (MySQL) + Drizzle ORM           |
+| Auth               | JWT (access + refresh tokens) via @fastify/jwt |
+| Real-Time Layer     | Socket.IO                                   |
+| API Docs            | Swagger (via @fastify/swagger + swagger-ui) |
+| Environment Config  | dotenv + zod                                |
+| Monitoring          | Sentry, Vercel logs                         |
+| Analytics          | PostHog                                     |
 
 ---
 
@@ -70,34 +60,20 @@ It is meant to evolve — update it as new components are built.
 <details>
 <summary>View details</summary>
 
-**Overview:**
-Establishes a secure, version-controlled connection between the backend and PlanetScale using Drizzle ORM and Drizzle Kit.
+✅ `.env` integration with secure credential loading  
+✅ Drizzle ORM + PlanetScale CLI setup  
+✅ Verified database connection
 
-**Location:**
+Key Files:
+- `/drizzle.config.ts`
+- `.env`
+- `/drizzle/`
 
-* `/drizzle.config.ts`
-* `.env`
-* `/drizzle/`
-
-**Key Features:**
-✅ Secure `.env`-based credentials
-✅ Drizzle Kit CLI (≥0.21)
-✅ Verified PlanetScale connection
-
-**Dependencies:**
-
-* `drizzle-orm`
-* `drizzle-kit`
-* `mysql2`
-* `dotenv`
-
-**Usage:**
-
+Commands:
 ```bash
 npx drizzle-kit generate
 npx drizzle-kit push
-npx drizzle-kit introspect
-```
+````
 
 </details>
 
@@ -108,26 +84,15 @@ npx drizzle-kit introspect
 <details>
 <summary>View details</summary>
 
-**Overview:**
-Populates essential initial records like roles, admin users, and supported languages.
+✅ Initial roles: `superadmin`, `admin`, `teacher`, `student`
+✅ Pre-seeded admin user
+✅ Uses internal `idGenerator` for unique IDs
 
-**Location:**
+Key File:
 
 * `/src/db/seeds/seed.ts`
 
-**Key Features:**
-✅ Predefined roles (`superadmin`, `admin`, `teacher`, `student`)
-✅ Core user accounts
-✅ Base languages (English, German)
-✅ Safe ID generation with `idGenerator`
-
-**Dependencies:**
-
-* `mysql2`
-* `drizzle-orm/mysql2`
-* `idGenerator` (internal)
-
-**Usage:**
+Command:
 
 ```bash
 npx ts-node src/db/seeds/seed.ts
@@ -142,20 +107,15 @@ npx ts-node src/db/seeds/seed.ts
 <details>
 <summary>View details</summary>
 
-**Overview:**
-Sets up and installs all core backend dependencies for the Fastify server stack.
+✅ Installed Fastify + plugins (`@fastify/jwt`, `@fastify/swagger`, etc.)
+✅ Installed dev tools (`ts-node`, `nodemon`, `eslint`, etc.)
+✅ Audit-cleaned (or flagged for watch) security vulnerabilities
 
-**Location:**
+Key File:
 
 * `/package.json`
-* `/node_modules/` (devcontainer)
 
-**Key Features:**
-✅ Fastify core (JWT, CORS, logging, Swagger)
-✅ PlanetScale + Drizzle ORM + Zod
-✅ Real-time (Socket.IO) + monitoring tools (Sentry, PostHog)
-
-**Usage Example:**
+Command:
 
 ```bash
 npm install
@@ -171,16 +131,12 @@ npm run dev
 <details>
 <summary>View details</summary>
 
-**Overview:**
-Prepares the `devcontainer.json` and recommends/installs Codespaces-compatible VSCode extensions for backend development.
+✅ Devcontainer configured for Node.js 20 backend
+✅ Recommends essential Codespaces-compatible VSCode extensions
 
-**Location:**
+Key File:
 
 * `.devcontainer/devcontainer.json`
-
-**Key Features:**
-✅ Pre-configured for Node.js, Fastify, PlanetScale, JWT, Socket.IO stack
-✅ Auto-loads backend developer tools
 
 </details>
 
@@ -191,67 +147,33 @@ Prepares the `devcontainer.json` and recommends/installs Codespaces-compatible V
 <details>
 <summary>View details</summary>
 
-**Overview:**
-Defines all backend database tables using Drizzle ORM, organized by functional area.
+✅ Users, roles, sessions, auth providers
+✅ Modular schema organization under `/src/db/schema/`
+✅ Ready for future learning, RPG, and social modules
 
-**Location:**
-
-* `/src/db/schema/`
-
-**Key Features:**
-✅ Core: users, roles, sessions, auth
-✅ Learning: languages, lessons, quizzes, questions, answers
-✅ RPG: characters, stats, skills, abilities, modifiers
-✅ Quests, achievements, social, media, localization
-
-**Dependencies:**
+Dependencies:
 
 * `drizzle-orm`
 * `drizzle-kit`
-* `mysql2`
-
-**Usage:**
-
-```bash
-npx drizzle-kit generate
-npx drizzle-kit push
-ls drizzle/
-```
 
 </details>
 
 ---
 
-### 6️⃣ Database Schema & Migration Setup
+### 6️⃣ Database Migration & Management
 
 <details>
 <summary>View details</summary>
 
-**Overview:**
-Manages schema definitions and migration flow for the evolving data model.
+✅ CLI-driven migrations
+✅ PlanetScale-friendly (avoids foreign keys)
+✅ Auto-generates SQL via Drizzle Kit
 
-**Location:**
-
-* `/src/db/schema/`
-* `/drizzle/`
-
-**Key Features:**
-✅ PlanetScale-compatible migrations (no foreign keys)
-✅ Drizzle CLI for generation and push
-
-**Dependencies:**
-
-* `drizzle-orm`
-* `drizzle-kit`
-* `mysql2`
-* `dotenv`
-
-**Usage:**
+Commands:
 
 ```bash
 npx drizzle-kit generate
 npx drizzle-kit push
-ls drizzle/
 ```
 
 </details>
@@ -263,36 +185,95 @@ ls drizzle/
 <details>
 <summary>View details</summary>
 
-**Overview:**
-Organizes the backend codebase for modularity, maintainability, and scalability.
+✅ Modular directories:
 
-**Location:**
+```
+/src
+  ├── config/
+  ├── plugins/
+  ├── routes/
+  ├── controllers/
+  ├── services/
+  ├── schemas/
+  ├── db/
+  ├── utils/
+  ├── sockets/
+```
 
-* `/backend/src/`
+✅ Scaffolding script used to pre-create folders and placeholders
 
-**Key Features:**
-✅ Structured folders: `routes`, `controllers`, `schemas`, `plugins`, `services`, `db`, `sockets`
-✅ Supports Fastify, JWT, Zod, Socket.IO, Swagger
-✅ Includes placeholder scaffolding command
+</details>
 
-**Usage Example:**
+---
+
+### 8️⃣ Authentication System (Access + Refresh Tokens)
+
+<details>
+<summary>View details</summary>
+
+✅ Modular routes, controllers, services
+✅ JWT-based access + refresh tokens
+✅ Bcrypt password hashing
+✅ Role-based user creation (student/admin)
+✅ Logout + global logout handling
+✅ Full Swagger API documentation
+
+Key Files:
+
+* `/src/routes/auth.route.ts`
+* `/src/controllers/auth.controller.ts`
+* `/src/services/auth.service.ts`
+* `/src/plugins/jwt.plugin.ts`
+
+✅ Tested via:
 
 ```bash
-mkdir -p src/{config,plugins,routes,controllers,schemas,db/{schema,seeds},services,utils,types,sockets} tests/{integration,unit} && \
-touch src/{app.ts,server.ts} \
-src/config/{env.ts,cors.ts,rateLimit.ts} \
-src/plugins/{jwt.plugin.ts,swagger.plugin.ts,sentry.plugin.ts,sensible.plugin.ts} \
-src/routes/{index.ts,hello.route.ts} \
-src/controllers/hello.controller.ts \
-src/schemas/hello.schema.ts \
-src/db/index.ts src/db/schema/users.ts src/db/seeds/seed.ts \
-src/services/{auth.service.ts,s3.service.ts,posthog.service.ts} \
-src/utils/logger.ts \
-src/types/index.d.ts \
-src/sockets/index.ts \
-tests/integration/hello.integration.test.ts \
-tests/unit/hello.unit.test.ts
+curl -X POST http://localhost:3000/auth/signup
+curl -X POST http://localhost:3000/auth/login
 ```
+
+✅ Swagger UI live at:
+
+```
+http://localhost:3000/docs
+```
+
+</details>
+
+---
+
+### 9️⃣ Swagger / OpenAPI Documentation
+
+<details>
+<summary>View details</summary>
+
+✅ Integrated `@fastify/swagger` + `@fastify/swagger-ui`
+✅ Converts Zod schemas into Swagger-compatible schemas
+✅ Documents all auth endpoints with descriptions, tags, request bodies, and responses
+✅ Example payloads for developers
+
+Access:
+
+```
+http://localhost:3000/docs
+```
+
+</details>
+
+---
+
+### 1️⃣0️⃣ Environment & Secrets Management
+
+<details>
+<summary>View details</summary>
+
+✅ Centralized `env.ts` file
+✅ Uses `zod` to validate required environment variables
+✅ Halts server boot if any critical env vars are missing or invalid
+
+Key File:
+
+* `/src/config/env.ts`
 
 </details>
 
@@ -300,8 +281,8 @@ tests/unit/hello.unit.test.ts
 
 ## How to Use This Document
 
-✅ Update this document after each **new backend component** is completed.
-✅ Review this document at the **start of each backend-focused chat or planning session**.
-✅ Use this as the **single source of truth** for backend implementation progress.
+✅ Update this overview **after each major backend milestone**
+✅ Reference it during **onboarding, planning, or handoff sessions**
+✅ Treat it as the **single source of truth** for backend progress and decisions
 
 ---
