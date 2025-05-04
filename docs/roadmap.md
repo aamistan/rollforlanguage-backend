@@ -9,11 +9,11 @@
 **Goal:** Ensure the backend has all critical building blocks for a stable MVP.
 
 * [x] Finalize Fastify server scaffolding (plugins, routes, controllers)
-* [ ] Lock in JWT auth (access + refresh tokens)
+* [x] Lock in JWT auth (access + refresh tokens)
 * [x] Set up Drizzle ORM with PlanetScale, schemas, migrations
 * [ ] Integrate Socket.IO basic real-time events
-* [ ] Confirm .env management and secrets handling
-* [ ] Document core API endpoints in Swagger/OpenAPI
+* [x] Confirm .env management and secrets handling
+* [x] Document core API endpoints in Swagger/OpenAPI
 
 ---
 
