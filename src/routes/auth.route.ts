@@ -63,6 +63,7 @@ export async function authRoutes(server: FastifyInstance) {
     schema: {
       description: 'Refresh access token using refresh token',
       tags: ['Auth'],
+      security: [{ bearerAuth: [] }],
       body: {
         type: 'object',
         properties: {
@@ -88,6 +89,7 @@ export async function authRoutes(server: FastifyInstance) {
     schema: {
       description: 'Log out of the current session (invalidate refresh token)',
       tags: ['Auth'],
+      security: [{ bearerAuth: [] }],
       body: {
         type: 'object',
         properties: {
@@ -113,6 +115,7 @@ export async function authRoutes(server: FastifyInstance) {
     schema: {
       description: 'Log out from all sessions (invalidate all refresh tokens)',
       tags: ['Auth'],
+      security: [{ bearerAuth: [] }],
       body: {
         type: 'object',
         properties: {
