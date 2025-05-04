@@ -92,7 +92,23 @@ export async function refreshHandler(request: FastifyRequest, reply: FastifyRepl
       return reply.status(401).send({ error: 'Invalid or expired refresh token' });
     }
 
-    // Optional: rotate token here (future improvement)
+    // Revoke the used token
+    await db
+      .update(refreshTokens)
+      .set({ isRevoked: true })
+      .where(eq(refreshTokens.id, stored.id));
+
+    // Issue new refresh token
+    const newRefreshToken = idGenerator(64);
+    const newExpiry = new Date();
+    newExpiry.setDate(newExpiry.getDate() + 7);
+
+    await db.insert(refreshTokens).values({
+      id: idGenerator(),
+      userId: stored.userId,
+      token: newRefreshToken,
+      expiresAt: newExpiry,
+    });
 
     // Get user info
     const user = await findUserById(stored.userId);
@@ -109,9 +125,11 @@ export async function refreshHandler(request: FastifyRequest, reply: FastifyRepl
 
     return reply.send({
       accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
     });
   } catch (err) {
     request.log.error(err);
     return reply.status(400).send({ error: 'Token refresh failed' });
   }
 }
+
