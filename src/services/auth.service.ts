@@ -64,3 +64,8 @@ export async function findUserByEmail(email: string) {
   const result = await db.select().from(users).where(eq(users.email, email));
   return result[0]; // return first user (email should be unique)
 }
+
+export async function findUserById(id: string) {
+  const [user] = await db.select().from(users).where(eq(users.id, id));
+  return user || null;
+}
