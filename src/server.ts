@@ -1,8 +1,9 @@
+import { env } from "../config/env";
 import app from './app';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+const PORT = env.PORT ? Number(env.PORT) : 3000;
 
 // Use Fastify's native Node server
 const server = app.server;
