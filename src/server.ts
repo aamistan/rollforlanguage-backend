@@ -4,13 +4,13 @@ import { Server as SocketIOServer } from 'socket.io';
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 
-// Create raw HTTP server using Fastify's .server
-const server = createServer(app.server);
+// Use Fastify's native Node server
+const server = app.server;
 
-// Attach Socket.IO
+// Attach Socket.IO directly
 const io = new SocketIOServer(server, {
   cors: {
-    origin: '*', // Adjust in production!
+    origin: '*', // Adjust for production
     methods: ['GET', 'POST'],
   },
 });
@@ -24,7 +24,11 @@ io.on('connection', (socket) => {
   });
 });
 
-// Start server
-server.listen(PORT, () => {
-  app.log.info(`Server + Socket.IO running at http://localhost:${PORT}`);
+// Start Fastify (wraps the server)
+app.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
+  if (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+  app.log.info(`Server + Socket.IO running at ${address}`);
 });
