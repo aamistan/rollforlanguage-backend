@@ -164,3 +164,25 @@ export async function logoutHandler(request: FastifyRequest, reply: FastifyReply
     return reply.status(400).send({ error: 'Logout failed' });
   }
 }
+
+export async function globalLogoutHandler(request: FastifyRequest, reply: FastifyReply) {
+  request.log.info('Received /auth/logout-all request');
+  try {
+    const { userId } = request.body as { userId: string };
+
+    if (!userId) {
+      return reply.status(400).send({ error: 'User ID missing' });
+    }
+
+    // Revoke all tokens for user
+    await db
+      .update(refreshTokens)
+      .set({ isRevoked: true })
+      .where(eq(refreshTokens.userId, userId));
+
+    return reply.send({ message: 'All user sessions revoked successfully' });
+  } catch (err) {
+    request.log.error(err);
+    return reply.status(400).send({ error: 'Global logout failed' });
+  }
+}
