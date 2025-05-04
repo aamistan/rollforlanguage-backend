@@ -47,3 +47,13 @@ export const authProviders = mysqlTable('auth_providers', {
   providerAccountId: varchar('provider_account_id', { length: 255 }).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
 });
+
+// Refresh Tokens table
+export const refreshTokens = mysqlTable('refresh_tokens', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  userId: varchar('user_id', { length: 36 }).notNull(),
+  token: varchar('token', { length: 255 }).notNull(),
+  isRevoked: boolean('is_revoked').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
+  expiresAt: timestamp('expires_at').notNull(),
+});
