@@ -1,4 +1,4 @@
-import { env } from "../config/env";
+import { env } from "./config/env";
 import app from './app';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
