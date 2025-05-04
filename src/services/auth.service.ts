@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { db } from '../db';
 import { users } from '../db/schema/core';
 import { idGenerator } from '../utils/idGenerator';
+import { eq } from 'drizzle-orm';
 
 const SALT_ROUNDS = 12;
 
@@ -57,4 +58,9 @@ export async function createUser({
   await db.insert(users).values(newUser);
 
   return newUser;
+}
+
+export async function findUserByEmail(email: string) {
+  const result = await db.select().from(users).where(eq(users.email, email));
+  return result[0]; // return first user (email should be unique)
 }

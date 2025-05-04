@@ -2,6 +2,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { signupSchema } from '../schemas/auth.schema';
 import { createUser } from '../services/auth.service'; // we'll make this next
+import { loginSchema } from '../schemas/auth.schema';
+import { findUserByEmail, verifyPassword } from '../services/auth.service';
 
 export async function signupHandler(request: FastifyRequest, reply: FastifyReply) {
   try {
@@ -21,5 +23,32 @@ export async function signupHandler(request: FastifyRequest, reply: FastifyReply
   } catch (err) {
     request.log.error(err);
     return reply.status(400).send({ error: 'Invalid request or user creation failed' });
+  }
+}
+
+export async function loginHandler(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    const parsed = loginSchema.parse(request.body);
+
+    const user = await findUserByEmail(parsed.email);
+    if (!user) {
+      return reply.status(401).send({ error: 'Invalid email or password' });
+    }
+
+    const isValid = await verifyPassword(parsed.password, user.passwordHash);
+    if (!isValid) {
+      return reply.status(401).send({ error: 'Invalid email or password' });
+    }
+
+    const token = await reply.jwtSign({
+      id: user.id,
+      email: user.email,
+      role: user.roleId,
+    });
+
+    return reply.send({ token });
+  } catch (err) {
+    request.log.error(err);
+    return reply.status(400).send({ error: 'Login failed' });
   }
 }
