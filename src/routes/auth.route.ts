@@ -20,6 +20,20 @@ export async function authRoutes(server: FastifyInstance) {
         201: {
           description: 'User created successfully',
           type: 'object',
+          properties: {
+            message: { type: 'string' },
+            user: {
+              type: 'object',
+              properties: {
+                id: { type: 'string' },
+                email: { type: 'string' },
+                username: { type: 'string' },
+                roleId: { type: 'string' },
+              },
+              required: ['id', 'email', 'username', 'roleId'],
+            },
+          },
+          required: ['message', 'user'],
         },
       },
     },
@@ -35,6 +49,10 @@ export async function authRoutes(server: FastifyInstance) {
         200: {
           description: 'Successful login with JWT token',
           type: 'object',
+          properties: {
+            token: { type: 'string' },
+          },
+          required: ['token'],
         },
       },
     },
@@ -56,6 +74,10 @@ export async function authRoutes(server: FastifyInstance) {
         200: {
           description: 'New access token issued',
           type: 'object',
+          properties: {
+            token: { type: 'string' },
+          },
+          required: ['token'],
         },
       },
     },
@@ -77,6 +99,10 @@ export async function authRoutes(server: FastifyInstance) {
         200: {
           description: 'Successfully logged out',
           type: 'object',
+          properties: {
+            message: { type: 'string' },
+          },
+          required: ['message'],
         },
       },
     },
@@ -98,6 +124,10 @@ export async function authRoutes(server: FastifyInstance) {
         200: {
           description: 'Successfully logged out from all sessions',
           type: 'object',
+          properties: {
+            message: { type: 'string' },
+          },
+          required: ['message'],
         },
       },
     },
