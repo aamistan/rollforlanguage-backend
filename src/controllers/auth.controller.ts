@@ -1,9 +1,6 @@
-// src/controllers/auth.controller.ts
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { signupSchema } from '../schemas/auth.schema';
-import { createUser } from '../services/auth.service'; // we'll make this next
-import { loginSchema } from '../schemas/auth.schema';
-import { findUserByEmail, verifyPassword } from '../services/auth.service';
+import { signupSchema, loginSchema } from '../schemas/auth.schema';
+import { createUser, findUserByEmail, verifyPassword } from '../services/auth.service';
 import '@fastify/jwt';
 
 export async function signupHandler(request: FastifyRequest, reply: FastifyReply) {
@@ -28,6 +25,7 @@ export async function signupHandler(request: FastifyRequest, reply: FastifyReply
 }
 
 export async function loginHandler(request: FastifyRequest, reply: FastifyReply) {
+  request.log.info('Received /auth/login request'); // 🛠 debug log added
   try {
     const parsed = loginSchema.parse(request.body);
 

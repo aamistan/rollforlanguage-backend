@@ -10,4 +10,10 @@ const app = Fastify({
 app.register(jwtPlugin);
 app.register(authRoutes, { prefix: '/auth' });
 
+app.addHook('onRequest', (request, reply, done) => {
+  app.log.info(`Incoming request: ${request.method} ${request.url}`);
+  done();
+});
+
+
 export default app;
