@@ -133,3 +133,34 @@ export async function refreshHandler(request: FastifyRequest, reply: FastifyRepl
   }
 }
 
+export async function logoutHandler(request: FastifyRequest, reply: FastifyReply) {
+  request.log.info('Received /auth/logout request');
+  try {
+    const { refreshToken } = request.body as { refreshToken: string };
+
+    if (!refreshToken) {
+      return reply.status(400).send({ error: 'Refresh token missing' });
+    }
+
+    // Find token
+    const [stored] = await db
+      .select()
+      .from(refreshTokens)
+      .where(eq(refreshTokens.token, refreshToken));
+
+    if (!stored) {
+      return reply.status(404).send({ error: 'Refresh token not found' });
+    }
+
+    // Revoke it
+    await db
+      .update(refreshTokens)
+      .set({ isRevoked: true })
+      .where(eq(refreshTokens.id, stored.id));
+
+    return reply.send({ message: 'Logged out successfully' });
+  } catch (err) {
+    request.log.error(err);
+    return reply.status(400).send({ error: 'Logout failed' });
+  }
+}
