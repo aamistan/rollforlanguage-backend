@@ -1,4 +1,3 @@
-// src/routes/auth.route.ts
 import { FastifyInstance } from 'fastify';
 import {
   loginHandler,
@@ -11,6 +10,8 @@ import fromZodSchema from 'zod-to-json-schema';
 import { signupSchema, loginSchema } from '../schemas/auth.schema';
 
 export async function authRoutes(server: FastifyInstance) {
+  const authenticate = (server as any).authenticate; // 👈 safely cast for TypeScript
+
   server.post('/signup', {
     schema: {
       description: 'Create a new user account',
@@ -59,11 +60,13 @@ export async function authRoutes(server: FastifyInstance) {
           description: 'Successful login with JWT token',
           type: 'object',
           properties: {
-            token: { type: 'string' },
+            accessToken: { type: 'string' },
+            refreshToken: { type: 'string' },
           },
-          required: ['token'],
+          required: ['accessToken', 'refreshToken'],
           example: {
-            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+            accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+            refreshToken: 'abc123refresh...',
           },
         },
       },
@@ -72,6 +75,7 @@ export async function authRoutes(server: FastifyInstance) {
   });
 
   server.post('/refresh', {
+    preHandler: [authenticate],
     schema: {
       description: 'Refresh access token using refresh token',
       tags: ['Auth'],
@@ -79,20 +83,22 @@ export async function authRoutes(server: FastifyInstance) {
       body: {
         type: 'object',
         properties: {
-          userId: { type: 'string' },
+          refreshToken: { type: 'string' },
         },
-        required: ['userId'],
+        required: ['refreshToken'],
       },
       response: {
         200: {
           description: 'New access token issued',
           type: 'object',
           properties: {
-            token: { type: 'string' },
+            accessToken: { type: 'string' },
+            refreshToken: { type: 'string' },
           },
-          required: ['token'],
+          required: ['accessToken', 'refreshToken'],
           example: {
-            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+            accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+            refreshToken: 'newrefresh123...',
           },
         },
       },
@@ -101,6 +107,7 @@ export async function authRoutes(server: FastifyInstance) {
   });
 
   server.post('/logout', {
+    preHandler: [authenticate],
     schema: {
       description: 'Log out of the current session (invalidate refresh token)',
       tags: ['Auth'],
@@ -108,9 +115,9 @@ export async function authRoutes(server: FastifyInstance) {
       body: {
         type: 'object',
         properties: {
-          userId: { type: 'string' },
+          refreshToken: { type: 'string' },
         },
-        required: ['userId'],
+        required: ['refreshToken'],
       },
       response: {
         200: {
@@ -130,6 +137,7 @@ export async function authRoutes(server: FastifyInstance) {
   });
 
   server.post('/logout-all', {
+    preHandler: [authenticate],
     schema: {
       description: 'Log out from all sessions (invalidate all refresh tokens)',
       tags: ['Auth'],
