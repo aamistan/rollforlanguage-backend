@@ -52,8 +52,10 @@ export async function loginHandler(request: FastifyRequest, reply: FastifyReply)
     const accessToken = await reply.jwtSign({
       id: user.id,
       email: user.email,
+      username: user.username,  // ← ADD THIS
       role: user.roleId,
     });
+    
 
     const refreshToken = idGenerator(64);
     const refreshExpiry = new Date();
@@ -119,8 +121,10 @@ export async function refreshHandler(request: FastifyRequest, reply: FastifyRepl
     const newAccessToken = await reply.jwtSign({
       id: user.id,
       email: user.email,
+      username: user.username,  // ← ADD THIS
       role: user.roleId,
     });
+    
 
     return reply.send({
       accessToken: newAccessToken,
