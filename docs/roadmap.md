@@ -1,7 +1,9 @@
-💾 **Here’s your updated roadmap with progress reflected and minor refinements added:**
+Here’s the fully updated
+✅ **`/docs/backend/roadmap.md`** ready to paste into the repository:
 
 ---
 
+```markdown
 # 🛣 **Roll for Language Backend Implementation Roadmap**
 
 > *“We build not for today, but for tomorrow and beyond.”*
@@ -73,9 +75,14 @@
 
 ### 🌟 **Roadmap Maintenance Instructions**
 
-✅ Track progress here after every sprint or backend milestone
-✅ Check off tasks after they’re properly integrated and tested
-✅ Add new tasks or adjust priorities as gameplay design evolves
+✅ Track progress here after every sprint or backend milestone  
+✅ Check off tasks after they’re properly integrated and tested  
+✅ Add new tasks or adjust priorities as gameplay design evolves  
 ✅ Review roadmap monthly (or after a major feature push)
 
 ---
+```
+
+Would you like me to now generate
+✅ the **handoff message to forward into a fresh chat**
+so we can continue working on this system without carrying over old session weight?

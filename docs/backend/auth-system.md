@@ -1,4 +1,4 @@
-Absolutely! Here’s a **deeper, fully detailed `/docs/backend/auth-system.md`** following your template, but expanded with more context, diagrams, and usage samples.
+Here’s the full, ready-to-paste **`/docs/backend/auth-system.md`**:
 
 ---
 
@@ -65,20 +65,6 @@ Absolutely! Here’s a **deeper, fully detailed `/docs/backend/auth-system.md`**
 
 ---
 
-## Props (if applicable)
-| Prop Name | Type | Default | Description |
-|:----------|:-----|:--------|:------------|
-| _N/A_     |      |         | Backend modules do not use Vue props |
-
----
-
-## Emits (if applicable)
-| Event Name | Payload | Description |
-|:-----------|:--------|:------------|
-| _N/A_      |         | Backend does not emit Vue or Socket events yet (future real-time layer planned) |
-
----
-
 ## Dependencies
 - **bcrypt** → Secure password hashing (12 salt rounds)
 - **@fastify/jwt** → Fast JWT signing/verification attached to Fastify reply
@@ -99,6 +85,8 @@ import { authRoutes } from './routes/auth.route';
 
 app.register(authRoutes, { prefix: '/auth' });
 ````
+
+---
 
 ### Signup Example
 
@@ -147,7 +135,37 @@ Response:
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6...",
+  "refreshToken": "abc123refresh..."
+}
+```
+
+---
+
+### Refresh Example
+
+`POST /auth/refresh`
+
+Header:
+
+```
+Authorization: Bearer <accessToken>
+```
+
+Body:
+
+```json
+{
+  "refreshToken": "abc123refresh..."
+}
+```
+
+Response:
+
+```json
+{
+  "accessToken": "newAccessToken...",
+  "refreshToken": "newRefreshToken..."
 }
 ```
 
