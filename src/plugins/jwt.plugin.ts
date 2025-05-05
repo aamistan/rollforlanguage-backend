@@ -1,4 +1,3 @@
-// src/plugins/jwt.plugin.ts
 import { env } from '../config/env';
 import fp from 'fastify-plugin';
 import fastifyJwt from '@fastify/jwt';
@@ -11,6 +10,7 @@ export default fp(async (fastify: FastifyInstance) => {
 
   fastify.decorate('authenticate', async function (request: FastifyRequest, reply: FastifyReply) {
     try {
+      // Verify JWT and attach decoded payload to request.user
       await request.jwtVerify();
     } catch (err) {
       request.log.error('JWT verification failed:', err);
