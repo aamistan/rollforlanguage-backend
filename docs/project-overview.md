@@ -1,5 +1,4 @@
-Here’s the fully prepared, ready-to-paste
-**`/docs/backend/project-overview.md`** with everything we’ve built so far:
+✅ Here’s the fully updated, ready-to-paste **`/docs/backend/project-overview.md`** with all the new RBAC and permissions system work included.
 
 ---
 
@@ -13,7 +12,7 @@ Here’s the fully prepared, ready-to-paste
 ## 🌟 **Project Purpose & Vision**
 
 The Roll for Language backend is a modular, scalable Node.js + Fastify system designed to power an immersive, RPG-style language-learning platform.  
-It handles user management, authentication, real-time features, multilingual support, and integration with a modern frontend, all crafted with long-term maintainability and future expansions in mind.
+It handles user management, authentication, fine-grained permissions, real-time features, multilingual support, and integration with a modern frontend, all crafted with long-term maintainability and future expansions in mind.
 
 ---
 
@@ -21,10 +20,10 @@ It handles user management, authentication, real-time features, multilingual sup
 
 > Every module, service, and deployment choice is made to future-proof the platform, ensuring scalability, security, and adaptability as the product evolves.
 
-1. We build clean code.
-2. We build optimized code.
-3. We follow best practices.
-4. We use modern architectures.
+1. We build clean code.  
+2. We build optimized code.  
+3. We follow best practices.  
+4. We use modern architectures.  
 5. We design for growth, not just today’s needs.
 
 We continuously ask:  
@@ -38,17 +37,19 @@ And we commit to building **all of them** thoughtfully.
 
 ## 💻 **Backend Tech Stack**
 
-| Area                | Tech                                        |
-|---------------------|--------------------------------------------|
-| Runtime             | Node.js                                     |
-| Web Framework       | Fastify                                     |
-| Database            | PlanetScale (MySQL) + Drizzle ORM           |
+| Area                | Tech                                           |
+|---------------------|-----------------------------------------------|
+| Runtime             | Node.js                                        |
+| Web Framework       | Fastify                                        |
+| Database            | PlanetScale (MySQL) + Drizzle ORM              |
 | Authentication      | JWT (access + refresh tokens) via @fastify/jwt |
-| Real-Time Layer     | Socket.IO                                   |
-| API Documentation   | Swagger (via @fastify/swagger + swagger-ui) |
-| Environment Config  | dotenv + zod                                |
-| Monitoring          | Sentry, Vercel logs                         |
-| Analytics           | PostHog                                     |
+| Authorization       | Role-Based Access Control (RBAC)               |
+| Real-Time Layer     | Socket.IO                                      |
+| API Documentation   | Swagger (via @fastify/swagger + swagger-ui)    |
+| Security Hardening  | @fastify/helmet, @fastify/rate-limit           |
+| Environment Config  | dotenv + zod                                   |
+| Monitoring          | Sentry, Vercel logs                            |
+| Analytics           | PostHog                                        |
 
 ---
 
@@ -74,7 +75,7 @@ Commands:
 ```bash
 npx drizzle-kit generate
 npx drizzle-kit push
-````
+```
 
 </details>
 
@@ -85,8 +86,8 @@ npx drizzle-kit push
 <details>
 <summary>View details</summary>
 
-✅ Initial roles: `superadmin`, `admin`, `teacher`, `student`
-✅ Pre-seeded admin user
+✅ Initial roles: `superadmin`, `admin`, `teacher`, `student`  
+✅ Pre-seeded admin and superadmin users  
 ✅ Uses internal `idGenerator` for unique IDs
 
 Key File:
@@ -108,8 +109,8 @@ npx ts-node src/db/seeds/seed.ts
 <details>
 <summary>View details</summary>
 
-✅ Installed Fastify + plugins (`@fastify/jwt`, `@fastify/swagger`, etc.)
-✅ Installed dev tools (`ts-node`, `nodemon`, `eslint`, etc.)
+✅ Installed Fastify + plugins (`@fastify/jwt`, `@fastify/swagger`, `@fastify/helmet`, etc.)  
+✅ Installed dev tools (`ts-node`, `nodemon`, `eslint`, etc.)  
 ✅ Audit-cleaned (or flagged for watch) security vulnerabilities
 
 Key File:
@@ -132,7 +133,7 @@ npm run dev
 <details>
 <summary>View details</summary>
 
-✅ Devcontainer configured for Node.js 20 backend
+✅ Devcontainer configured for Node.js 20 backend  
 ✅ Recommends essential Codespaces-compatible VSCode extensions
 
 Key File:
@@ -148,8 +149,8 @@ Key File:
 <details>
 <summary>View details</summary>
 
-✅ Users, roles, sessions, auth providers
-✅ Modular schema organization under `/src/db/schema/`
+✅ Users, roles, sessions, auth providers  
+✅ Modular schema organization under `/src/db/schema/`  
 ✅ Ready for future learning, RPG, and social modules
 
 Dependencies:
@@ -166,8 +167,8 @@ Dependencies:
 <details>
 <summary>View details</summary>
 
-✅ CLI-driven migrations
-✅ PlanetScale-friendly (avoids foreign keys)
+✅ CLI-driven migrations  
+✅ PlanetScale-friendly (avoids foreign keys)  
 ✅ Auto-generates SQL via Drizzle Kit
 
 Commands:
@@ -212,11 +213,11 @@ npx drizzle-kit push
 <details>
 <summary>View details</summary>
 
-✅ Modular routes, controllers, services
-✅ JWT-based access + refresh tokens
-✅ Bcrypt password hashing
-✅ Role-based user creation (student/admin)
-✅ Logout + global logout handling
+✅ Modular routes, controllers, services  
+✅ JWT-based access + refresh tokens  
+✅ Bcrypt password hashing  
+✅ Role-based user creation (student/admin/superadmin)  
+✅ Logout + global logout handling  
 ✅ Full Swagger API documentation
 
 Key Files:
@@ -243,38 +244,34 @@ http://localhost:3000/docs
 
 ---
 
-### 9️⃣ Swagger / OpenAPI Documentation
+### 9️⃣ Role-Based Access Control (RBAC)
 
 <details>
 <summary>View details</summary>
 
-✅ Integrated `@fastify/swagger` + `@fastify/swagger-ui`
-✅ Converts Zod schemas into Swagger-compatible schemas
-✅ Documents all auth endpoints with descriptions, tags, request bodies, and responses
-✅ Example payloads for developers
+✅ Centralized role-permission mapping  
+✅ Fastify request decorator: `request.hasPermission()`  
+✅ Supports roles: superadmin, admin, teacher, student  
+✅ Grants fine-grained control over sensitive routes  
+✅ Ready for future expansion into ABAC (attribute-based access control)
 
-Access:
+Key Files:
 
-```
-http://localhost:3000/docs
-```
+* `/src/utils/permissions.ts`
+* `/src/plugins/permissions.plugin.ts`
 
 </details>
 
 ---
 
-### 🔟 Environment & Secrets Management
+### 🔟 Security Hardening
 
 <details>
 <summary>View details</summary>
 
-✅ Centralized `env.ts` file
-✅ Uses `zod` to validate required environment variables
-✅ Halts server boot if any critical env vars are missing or invalid
-
-Key File:
-
-* `/src/config/env.ts`
+✅ Integrated `@fastify/helmet` for HTTP security headers  
+✅ Configured `@fastify/rate-limit` for basic anti-abuse protections  
+✅ Error handling + logging for JWT failures
 
 </details>
 
@@ -282,9 +279,8 @@ Key File:
 
 ## 📋 How to Use This Document
 
-✅ Update this overview **after each major backend milestone**
-✅ Reference it during **onboarding, planning, or handoff sessions**
+✅ Update this overview **after each major backend milestone**  
+✅ Reference it during **onboarding, planning, or handoff sessions**  
 ✅ Treat it as the **single source of truth** for backend progress and decisions
 
 ---
-

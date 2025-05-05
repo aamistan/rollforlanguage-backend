@@ -1,10 +1,10 @@
-Here’s the full, ready-to-paste **`/docs/backend/auth-system.md`**:
+✅ Here’s the fully updated **`/docs/backend/auth-system.md`** reflecting the work we’ve done in this chat, including the RBAC foundation and permissions integration.
 
 ---
 
 ```markdown
 /**
- * Authentication System (Backend)
+ * Authentication & Authorization System (Backend)
  * 
  * Related Documentation:
  * /docs/backend/auth-system.md
@@ -12,24 +12,26 @@ Here’s the full, ready-to-paste **`/docs/backend/auth-system.md`**:
  * Purpose:
  * - Provides secure, JWT-based authentication for the Roll for Language platform
  * - Integrates Fastify routes, services, and controllers using modular clean architecture
- * - Enables future expansions like real-time auth updates, multi-factor auth, and role-based controls
+ * - Adds fine-grained Role-Based Access Control (RBAC) for scalable multi-role management
  * 
  * Development Mantra:
  * "We build not for today, but for tomorrow and beyond."
  */
 
-# Authentication System
+# Authentication & Authorization System
 
 ## Overview
-> The authentication system is the backbone of user identity and session control on the platform.  
-> It manages account creation, login, secure token issuance, and session invalidation while maintaining clear separation of concerns across routes, controllers, and services.
+> The authentication and authorization system is the backbone of user identity, session control, and permission management on the platform.  
+> It handles account creation, login, token issuance, session invalidation, and fine-grained role-based access, while maintaining clean separation across routes, controllers, services, and plugins.
 
 ## Location
-> Core auth system lives in:  
+> Core system lives in:  
 > - `/src/routes/auth.route.ts` → Route registration + Swagger schema  
 > - `/src/controllers/auth.controller.ts` → Request handling logic  
 > - `/src/services/auth.service.ts` → Business logic (DB queries, password checks)  
 > - `/src/plugins/jwt.plugin.ts` → JWT signing/verification  
+> - `/src/plugins/permissions.plugin.ts` → Fastify decorator for permission checks  
+> - `/src/utils/permissions.ts` → Centralized role-permission mapping  
 > - `/src/config/env.ts` → Centralized environment loading with Zod validation
 
 ---
@@ -42,6 +44,7 @@ Here’s the full, ready-to-paste **`/docs/backend/auth-system.md`**:
 - [x] **Global logout** → Invalidates all user sessions
 - [x] **Swagger integration** → API docs with live endpoint testing
 - [x] **.env validation** → Prevents booting with missing secrets or configs
+- [x] **Fine-grained RBAC** → Checks permissions using a Fastify request decorator
 
 ---
 
@@ -65,11 +68,28 @@ Here’s the full, ready-to-paste **`/docs/backend/auth-system.md`**:
 
 ---
 
+## Role-Based Access Control (RBAC)
+
+- **Roles supported:**
+  - `superadmin` → full access, system-level control
+  - `admin` → manage users, campaigns, reports
+  - `teacher` → manage campaigns, view reports
+  - `student` → submit progress, view own data
+
+- **Permissions:**
+  Managed via:
+  - `/src/utils/permissions.ts` → defines which actions each role can perform
+  - `/src/plugins/permissions.plugin.ts` → exposes `request.hasPermission(permission)` for routes to use
+
+---
+
 ## Dependencies
 - **bcrypt** → Secure password hashing (12 salt rounds)
 - **@fastify/jwt** → Fast JWT signing/verification attached to Fastify reply
 - **@fastify/swagger** → OpenAPI doc generator
 - **@fastify/swagger-ui** → Swagger web UI under `/docs`
+- **@fastify/helmet** → Security headers for anti-abuse hardening
+- **@fastify/rate-limit** → Request throttling
 - **zod** → Strong schema validation for env + request body
 - **zod-to-json-schema** → Converts Zod schemas to Swagger-friendly JSON
 - **drizzle-orm** → Structured, type-safe SQL queries (no raw SQL)
@@ -85,6 +105,16 @@ import { authRoutes } from './routes/auth.route';
 
 app.register(authRoutes, { prefix: '/auth' });
 ````
+
+---
+
+### Protecting Routes with RBAC
+
+```ts
+if (!request.hasPermission('manage_users')) {
+  return reply.status(403).send({ error: 'Forbidden', message: 'You do not have permission.' });
+}
+```
 
 ---
 
@@ -142,35 +172,6 @@ Response:
 
 ---
 
-### Refresh Example
-
-`POST /auth/refresh`
-
-Header:
-
-```
-Authorization: Bearer <accessToken>
-```
-
-Body:
-
-```json
-{
-  "refreshToken": "abc123refresh..."
-}
-```
-
-Response:
-
-```json
-{
-  "accessToken": "newAccessToken...",
-  "refreshToken": "newRefreshToken..."
-}
-```
-
----
-
 ### Swagger Access
 
 Visit:
@@ -185,12 +186,13 @@ http://localhost:3000/docs
 
 ## Best Practices + Future Expansions
 
-| Best Practice                | Future Plans                               |
-| ---------------------------- | ------------------------------------------ |
-| Use `.env` + Zod validation  | Add encryption for refresh tokens          |
-| Limit JWT token lifespan     | Add 2FA or MFA hooks                       |
-| Centralize auth services     | Introduce admin/teacher user roles         |
-| Document all APIs in Swagger | Expand real-time auth events via Socket.IO |
+| Best Practice                | Future Plans                                            |
+| ---------------------------- | ------------------------------------------------------- |
+| Use `.env` + Zod validation  | Add encryption for refresh tokens                       |
+| Limit JWT token lifespan     | Add 2FA or MFA hooks                                    |
+| Centralize auth services     | Expand admin/teacher/student workflows                  |
+| Document all APIs in Swagger | Expand real-time auth events via Socket.IO              |
+| Fine-grained RBAC            | Build ABAC (attribute-based access) or role hierarchies |
 
 ---
 
@@ -207,9 +209,10 @@ http://localhost:3000/docs
 
 ## Summary
 
-The authentication system is now:
+The authentication and authorization system is now:
 ✅ Modular
 ✅ Secure
+✅ RBAC-enabled
 ✅ Swagger-documented
 ✅ Ready for future real-time and multi-role expansions
 
@@ -218,3 +221,4 @@ Keep the dev mantra close:
 > *“We build not for today, but for tomorrow and beyond.”*
 
 ---
+

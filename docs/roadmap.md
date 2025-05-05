@@ -1,5 +1,4 @@
-Here’s the fully updated
-✅ **`/docs/backend/roadmap.md`** ready to paste into the repository:
+✅ Here’s the fully updated **`/docs/backend/roadmap.md`** with all the RBAC and security progress we completed in this chat.
 
 ---
 
@@ -29,8 +28,8 @@ Here’s the fully updated
 
 **Goal:** Strengthen the system’s security, reliability, and maintainability.
 
-* [ ] Add Fastify rate limiter and anti-abuse protections
-* [ ] Build fine-grained RBAC (Role-Based Access Control) or ABAC (Attribute-Based Access Control)
+* [x] Add Fastify rate limiter and anti-abuse protections
+* [x] Build fine-grained RBAC (Role-Based Access Control) with Fastify decorator and centralized permission mapping
 * [ ] Integrate in-memory or Redis session management (optional for enhanced performance)
 * [ ] Expand test coverage (unit, integration, E2E) using tools like Vitest + Supertest
 * [ ] Establish audit logging for sensitive or critical operations (e.g., account changes, deletions)
@@ -83,6 +82,6 @@ Here’s the fully updated
 ---
 ```
 
-Would you like me to now generate
-✅ the **handoff message to forward into a fresh chat**
-so we can continue working on this system without carrying over old session weight?
+---
+
+✅ Would you like me to now generate the **handoff message** for when you return to backend work, so you can cleanly restart from the next milestone later?
