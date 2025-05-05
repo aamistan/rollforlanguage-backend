@@ -2,11 +2,18 @@ import Fastify from 'fastify';
 import { authRoutes } from './routes/auth.route';
 import jwtPlugin from './plugins/jwt.plugin';
 import rateLimitPlugin from './plugins/rateLimit.plugin';
+import helmet from '@fastify/helmet';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 
 const app = Fastify({
   logger: true,
+});
+
+// Register security headers early
+app.register(helmet, {
+  global: true,
+  contentSecurityPolicy: false, // Disable initially to avoid breaking Swagger UI
 });
 
 // Swagger setup
