@@ -38,24 +38,35 @@ export async function loginHandler(request: FastifyRequest, reply: FastifyReply)
   request.log.info('Received /auth/login request');
   try {
     const parsed = loginSchema.parse(request.body);
+    request.log.info(`Parsed login request: ${JSON.stringify(parsed)}`);
 
     const user = await findUserByEmail(parsed.email);
     if (!user) {
+      request.log.warn(`User not found for email: ${parsed.email}`);
       return reply.status(401).send({ error: 'Invalid email or password' });
     }
 
+    request.log.info(`Found user: ${JSON.stringify({
+      id: user.id,
+      email: user.email,
+      roleId: user.roleId,
+      isVerified: user.isVerified,
+    })}`);
+
     const isValid = await verifyPassword(parsed.password, user.passwordHash);
     if (!isValid) {
+      request.log.warn(`Invalid password for user: ${parsed.email}`);
       return reply.status(401).send({ error: 'Invalid email or password' });
     }
+
+    request.log.info(`Password verified, generating tokens for user: ${parsed.email}`);
 
     const accessToken = await reply.jwtSign({
       id: user.id,
       email: user.email,
-      username: user.username,  // ← ADD THIS
+      username: user.username,
       role: user.roleId,
     });
-    
 
     const refreshToken = idGenerator(64);
     const refreshExpiry = new Date();
@@ -68,15 +79,18 @@ export async function loginHandler(request: FastifyRequest, reply: FastifyReply)
       expiresAt: refreshExpiry,
     });
 
+    request.log.info(`Login successful, sending tokens for user: ${parsed.email}`);
+
     return reply.send({
       accessToken,
       refreshToken,
     });
   } catch (err) {
-    request.log.error(err);
+    request.log.error(`Login handler error: ${err}`);
     return reply.status(400).send({ error: 'Login failed' });
   }
 }
+
 
 export async function refreshHandler(request: FastifyRequest, reply: FastifyReply) {
   await request.jwtVerify();
