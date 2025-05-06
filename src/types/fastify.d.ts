@@ -14,6 +14,8 @@ declare module '@fastify/jwt' {
       email: string;
       username: string;
       role: string;
+      iat: number;
+      exp: number;
     };
   }
 }
@@ -28,5 +30,13 @@ declare module 'fastify' {
 
   interface FastifyRequest {
     hasPermission: (permission: string) => boolean;
+    user: {
+      id: string;
+      email: string;
+      username: string;
+      role: string;
+      iat: number;
+      exp: number;
+    };
   }
 }

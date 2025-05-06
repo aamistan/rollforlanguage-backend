@@ -1,10 +1,9 @@
 import { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import { checkPermission } from '../utils/permissions';
-import { JwtUser } from '../types/jwtUser';
 
 const permissionsPlugin: FastifyPluginAsync = async (app) => {
   app.decorateRequest('hasPermission', function (this: FastifyRequest, permission: string) {
-    const user = this.user as JwtUser;
+    const user = this.user;
 
     if (!user) {
       return false;
