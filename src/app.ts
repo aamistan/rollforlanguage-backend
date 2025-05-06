@@ -24,7 +24,7 @@ app.register(cors, {
     const allowedOrigins = [
       'http://localhost:5173', // Local frontend (Vite dev server)
       'https://www.rollforlanguage.com', // Production frontend (replace with your actual domain)
-      'https://bug-free-parakeet-x5p69xpg56qvfvvx5-4000.app.github.dev/', // Allow frontend Codespace
+      'https://bug-free-parakeet-x5p69xpg56qvfvvx5-4000.app.github.dev', // Allow frontend Codespace
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       cb(null, true);
