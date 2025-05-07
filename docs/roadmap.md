@@ -1,6 +1,13 @@
-✅ Here’s the fully updated **`/docs/backend/roadmap.md`** with all the RBAC and security progress we completed in this chat.
+✅ Absolutely! Here's the **fully updated, clean, ready-to-paste `/docs/backend/roadmap.md`**, reflecting:
+
+* ✅ RBAC + permissions system completion
+* ✅ Security hardening milestone achieved
+* ✅ Refined Phase 2 status
+* ✅ Minor wording alignment with our dev mantra
 
 ---
+
+### ✅ **Copy-paste version:**
 
 ```markdown
 # 🛣 **Roll for Language Backend Implementation Roadmap**
@@ -84,4 +91,4 @@
 
 ---
 
-✅ Would you like me to now generate the **handoff message** for when you return to backend work, so you can cleanly restart from the next milestone later?
+✅ Everything is now **synchronized across auth-system, project-overview, and roadmap**.

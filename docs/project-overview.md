@@ -1,6 +1,14 @@
-✅ Here’s the fully updated, ready-to-paste **`/docs/backend/project-overview.md`** with all the new RBAC and permissions system work included.
+✅ Absolutely! Here's the **fully updated `/docs/backend/project-overview.md`**, freshly cleaned and expanded to reflect:
+
+* ✅ RBAC (Role-Based Access Control) integration
+* ✅ permissions plugin and utils
+* ✅ centralized CORS config
+* ✅ clarified security hardening
+* ✅ future-proof notes aligned with our dev mantra
 
 ---
+
+### ✅ **Ready-to-paste version:**
 
 ````markdown
 # 🏰 **Roll for Language Backend: Project Overview**
@@ -38,7 +46,7 @@ And we commit to building **all of them** thoughtfully.
 ## 💻 **Backend Tech Stack**
 
 | Area                | Tech                                           |
-|---------------------|-----------------------------------------------|
+|--------------------|------------------------------------------------|
 | Runtime             | Node.js                                        |
 | Web Framework       | Fastify                                        |
 | Database            | PlanetScale (MySQL) + Drizzle ORM              |
@@ -47,6 +55,7 @@ And we commit to building **all of them** thoughtfully.
 | Real-Time Layer     | Socket.IO                                      |
 | API Documentation   | Swagger (via @fastify/swagger + swagger-ui)    |
 | Security Hardening  | @fastify/helmet, @fastify/rate-limit           |
+| CORS                | Centralized config via `/config/cors.ts`       |
 | Environment Config  | dotenv + zod                                   |
 | Monitoring          | Sentry, Vercel logs                            |
 | Analytics           | PostHog                                        |
@@ -218,7 +227,8 @@ npx drizzle-kit push
 ✅ Bcrypt password hashing  
 ✅ Role-based user creation (student/admin/superadmin)  
 ✅ Logout + global logout handling  
-✅ Full Swagger API documentation
+✅ Full Swagger API documentation  
+✅ JWT payload returns `id`, `email`, `username`, `role`
 
 Key Files:
 
@@ -249,11 +259,11 @@ http://localhost:3000/docs
 <details>
 <summary>View details</summary>
 
-✅ Centralized role-permission mapping  
+✅ Centralized role-permission mapping in `/src/utils/permissions.ts`  
 ✅ Fastify request decorator: `request.hasPermission()`  
 ✅ Supports roles: superadmin, admin, teacher, student  
-✅ Grants fine-grained control over sensitive routes  
-✅ Ready for future expansion into ABAC (attribute-based access control)
+✅ Granular permission checks (e.g., `manage_users`, `view_reports`)  
+✅ Ready for expansion into ABAC (attribute-based access control)
 
 Key Files:
 
@@ -270,8 +280,9 @@ Key Files:
 <summary>View details</summary>
 
 ✅ Integrated `@fastify/helmet` for HTTP security headers  
-✅ Configured `@fastify/rate-limit` for basic anti-abuse protections  
-✅ Error handling + logging for JWT failures
+✅ Configured `@fastify/rate-limit` for anti-abuse protections  
+✅ Centralized CORS config in `/src/config/cors.ts`  
+✅ Global error handler and logging for JWT verification
 
 </details>
 
@@ -284,3 +295,4 @@ Key Files:
 ✅ Treat it as the **single source of truth** for backend progress and decisions
 
 ---
+````

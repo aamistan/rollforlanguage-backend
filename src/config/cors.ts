@@ -18,15 +18,20 @@ const allowedOrigins: string[] = [
  */
 export const corsOptions: FastifyCorsOptions = {
   origin: (origin, cb) => {
+    console.log(`[CORS DEBUG] Incoming origin: ${origin}`);
+  
     if (!origin) {
-      // Allow requests with no origin (e.g., curl, Postman)
+      console.log(`[CORS DEBUG] No origin → allowing request`);
       cb(null, true);
     } else if (allowedOrigins.includes(origin)) {
+      console.log(`[CORS DEBUG] Allowed origin: ${origin}`);
       cb(null, true);
     } else {
+      console.warn(`[CORS DEBUG] Blocked origin: ${origin}`);
       cb(new Error(`Not allowed by CORS: ${origin}`), false);
     }
   },
+  
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Content-Length', 'X-Kuma-Revision'], // Add any exposed headers you want
