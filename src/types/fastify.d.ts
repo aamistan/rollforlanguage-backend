@@ -1,3 +1,5 @@
+// src/types/fastify.d.ts
+
 import 'fastify';
 import '@fastify/jwt';
 
@@ -22,14 +24,21 @@ declare module '@fastify/jwt' {
 
 declare module 'fastify' {
   interface FastifyInstance {
-    authenticate(
+    authenticate: (
       request: import('fastify').FastifyRequest,
       reply: import('fastify').FastifyReply
-    ): Promise<void>;
+    ) => Promise<void>;
   }
 
   interface FastifyRequest {
+    /**
+     * Checks if the user has the specified permission
+     */
     hasPermission: (permission: string) => boolean;
+
+    /**
+     * Authenticated user payload (populated by JWT plugin)
+     */
     user: {
       id: string;
       email: string;

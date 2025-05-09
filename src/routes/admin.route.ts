@@ -1,4 +1,5 @@
 // src/routes/admin.route.ts
+import '../types/fastify'; // ✅ path relative to admin.route.ts
 
 import { FastifyInstance } from 'fastify';
 import { createUserHandler } from '../controllers/admin.controller';
