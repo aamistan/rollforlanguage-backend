@@ -1,4 +1,7 @@
+// src/plugins/permissions.plugin.ts
+
 import { FastifyPluginAsync, FastifyRequest } from 'fastify';
+import fp from 'fastify-plugin'; // ✅ ensure fastify-plugin is used
 import { checkPermission } from '../utils/permissions';
 
 interface JwtUser {
@@ -31,4 +34,5 @@ const permissionsPlugin: FastifyPluginAsync = async (app) => {
   });
 };
 
-export default permissionsPlugin;
+// ✅ Export the plugin wrapped in fastify-plugin to disable encapsulation
+export default fp(permissionsPlugin, { name: 'permissionsPlugin' });

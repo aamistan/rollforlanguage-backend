@@ -5,12 +5,14 @@ import { FastifyInstance } from 'fastify';
 import { createUserHandler } from '../controllers/admin.controller';
 
 export async function adminRoutes(app: FastifyInstance) {
-  // Protect entire admin route namespace
   app.register(async function (admin) {
     admin.addHook('onRequest', async (request, reply) => {
-      if (!request.user) {
+      try {
+        await request.jwtVerify(); // ✅ verify JWT to populate request.user
+      } catch (err) {
         return reply.status(401).send({ error: 'Unauthorized' });
       }
+
       if (
         !request.hasPermission('manage_users') &&
         !request.hasPermission('create_student')
@@ -22,3 +24,4 @@ export async function adminRoutes(app: FastifyInstance) {
     admin.post('/users', createUserHandler);
   }, { prefix: '/admin' });
 }
+
