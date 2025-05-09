@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import { authRoutes } from './routes/auth.route';
+import { adminRoutes } from './routes/admin.route'; // 🆕 import admin routes
 import jwtPlugin from './plugins/jwt.plugin';
 import rateLimitPlugin from './plugins/rateLimit.plugin';
 import permissionsPlugin from './plugins/permissions.plugin';
@@ -37,6 +38,7 @@ app.addHook('onRequest', (request, reply, done) => {
 
 // Register routes
 app.register(authRoutes, { prefix: '/auth' });
+app.register(adminRoutes); // 🆕 register admin routes (prefix already handled inside admin.route.ts)
 
 // Global error handler
 app.setErrorHandler((error, request, reply) => {

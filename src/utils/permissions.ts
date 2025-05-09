@@ -14,6 +14,7 @@ export const rolePermissions: Record<string, string[]> = {
   teacher: [
     'manage_campaigns',
     'view_reports',
+    'create_student',
   ],
   student: [
     'submit_progress',
