@@ -2,9 +2,11 @@
 
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { hashPassword, findUserByEmail } from '../services/auth.service';
+import { getUsersFromDB } from '../services/user.service'; // 🆕 DB fetch logic
 import { db } from '../db';
 import { users } from '../db/schema/core';
 import { idGenerator } from '../utils/idGenerator';
+import { GetUsersQuery } from '../schemas/admin.schema'; // 🆕 Zod-derived type
 
 const allowedRolesByCreator: Record<string, string[]> = {
   superadmin: ['superadmin', 'admin', 'teacher', 'student'],
@@ -60,5 +62,21 @@ export async function createUserHandler(request: FastifyRequest, reply: FastifyR
   } catch (err) {
     request.log.error(`Error in createUserHandler: ${err}`);
     return reply.status(500).send({ error: 'Internal server error.' });
+  }
+}
+
+// ✅ NEW: GET /admin/users handler
+export async function getUsersHandler(request: FastifyRequest, reply: FastifyReply) {
+  request.log.info('Received GET /admin/users request');
+
+  try {
+    const query = request.query as GetUsersQuery;
+
+    const result = await getUsersFromDB(query);
+
+    return reply.status(200).send(result);
+  } catch (err) {
+    request.log.error(`Error in getUsersHandler: ${err}`);
+    return reply.status(500).send({ error: 'Failed to retrieve users' });
   }
 }
