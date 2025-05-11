@@ -5,6 +5,9 @@ import { z } from 'zod';
 /**
  * Admin Schema
  * 
+ * Related Documentation:
+ * /docs/frontend/admin-user-system.md
+ * 
  * Purpose:
  * - Centralizes all Zod schemas related to admin routes
  * - Validates query parameters, request bodies, etc.
@@ -14,25 +17,38 @@ import { z } from 'zod';
  * "We build not for today, but for tomorrow and beyond."
  */
 
+// 🧭 Role definitions shared across platform
 const roleEnum = z.enum(['superadmin', 'admin', 'teacher', 'student']);
 
+/**
+ * Zod schema for GET /admin/users query parameters
+ * NOTE: `.default()` was intentionally omitted to maintain Fastify compatibility.
+ * Defaults are handled in the controller to avoid JSON Schema validation errors.
+ */
 export const getUsersQuerySchema = z.object({
-  search: z.string().min(1).max(100).optional(), // fuzzy match username or email
-  role: roleEnum.optional(),                    // single role
-  roles: z.array(roleEnum).optional(),          // multi-role
+  // 🔍 Search query
+  search: z.string().min(1).max(100).optional(),
 
-  page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(25),
+  // 🧩 Role filters
+  role: roleEnum.optional(),               // single-role filter
+  roles: z.array(roleEnum).optional(),     // multi-role filter (future-ready)
 
-  sortBy: z.enum(['username', 'email', 'createdAt']).default('createdAt'),
-  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+  // 📄 Pagination
+  page: z.coerce.number().min(1).optional(),
+  limit: z.coerce.number().min(1).max(100).optional(),
 
+  // 📊 Sorting
+  sortBy: z.enum(['username', 'email', 'createdAt']).optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional(),
+
+  // 📅 Date range filters
   createdBefore: z.coerce.date().optional(),
   createdAfter: z.coerce.date().optional(),
 
+  // ⚙️ Modifier flags
   includeSuspended: z.coerce.boolean().optional(),
   includeCountOnly: z.coerce.boolean().optional(),
 });
 
-// 🧠 Parsed type for controller/service use
+// 🧠 Inferred type for use in controllers/services
 export type GetUsersQuery = z.infer<typeof getUsersQuerySchema>;

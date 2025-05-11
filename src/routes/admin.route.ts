@@ -2,16 +2,26 @@
 import type {} from '../types/fastify';
 
 import { FastifyInstance } from 'fastify';
-import { z } from 'zod';
 import { createUserHandler, getUsersHandler } from '../controllers/admin.controller';
-import { getUsersQuerySchema } from '../schemas/admin.schema';
+
+/**
+ * Admin Routes
+ * 
+ * Purpose:
+ * - Handles administrative endpoints related to user management
+ * - Integrates permission gate for superadmin, admin, and teacher controls
+ * - Powers user creation and paginated user table query for admin dashboard
+ * 
+ * Development Mantra:
+ * "We build not for today, but for tomorrow and beyond."
+ */
 
 export async function adminRoutes(app: FastifyInstance) {
   app.register(async function (admin) {
-    // ✅ Auth + permission gate
+    // ✅ Global gate: All /admin routes require JWT + at least one user-management permission
     admin.addHook('onRequest', async (request, reply) => {
       try {
-        await request.jwtVerify(); // Populate request.user
+        await request.jwtVerify();
       } catch (err) {
         return reply.status(401).send({ error: 'Unauthorized' });
       }
@@ -19,12 +29,11 @@ export async function adminRoutes(app: FastifyInstance) {
       const hasManageUsers = request.hasPermission('manage_users');
       const hasCreateStudent = request.hasPermission('create_student');
 
-      // Only allow access to /admin routes if they have *some* user permissions
       if (!hasManageUsers && !hasCreateStudent) {
         return reply.status(403).send({ error: 'Forbidden' });
       }
 
-      // Limit GET /admin/users to only manage_users
+      // Limit GET /admin/users strictly to admins/superadmins
       if (
         request.method === 'GET' &&
         request.url.startsWith('/users') &&
@@ -34,49 +43,33 @@ export async function adminRoutes(app: FastifyInstance) {
       }
     });
 
-    // ✅ POST /admin/users — add new user
+    // 🧩 POST /admin/users — create user (RBAC handled in controller)
     admin.post('/users', createUserHandler);
 
-    // ✅ GET /admin/users — admin-facing user table API
+    // 📄 GET /admin/users — paginated list of users (Fastify-safe querystring + Zod fallback in controller)
     admin.get('/users', {
       schema: {
-        querystring: getUsersQuerySchema,
-        response: {
-          200: {
-            type: 'object',
-            properties: {
-              data: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {
-                    id: { type: 'string' },
-                    username: { type: 'string' },
-                    email: { type: 'string' },
-                    role: { type: 'string' },
-                    createdAt: { type: 'string', format: 'date-time' },
-                  },
-                  required: ['id', 'username', 'email', 'role', 'createdAt'],
-                },
-              },
-              pagination: {
-                type: 'object',
-                properties: {
-                  total: { type: 'number' },
-                  page: { type: 'number' },
-                  limit: { type: 'number' },
-                  totalPages: { type: 'number' },
-                },
-                required: ['total', 'page', 'limit', 'totalPages'],
-              },
-            },
-            required: ['data', 'pagination'],
+        querystring: {
+          type: 'object',
+          properties: {
+            search: { type: 'string' },
+            role: { type: 'string' },
+            roles: { type: 'array', items: { type: 'string' } },
+            page: { type: 'number' },
+            limit: { type: 'number' },
+            sortBy: { type: 'string' },
+            sortOrder: { type: 'string' },
+            createdBefore: { type: 'string', format: 'date-time' },
+            createdAfter: { type: 'string', format: 'date-time' },
+            includeSuspended: { type: 'boolean' },
+            includeCountOnly: { type: 'boolean' },
           },
+          additionalProperties: true,
         },
         tags: ['Admin'],
         summary: 'Get paginated list of users for admin dashboard',
         description:
-          'Returns user records with optional filters, search, role filters, date ranges, and pagination controls.',
+          'Returns filtered, sortable, paginated user data. Supports role filters, date range, and future enhancements.',
       },
       handler: getUsersHandler,
     });

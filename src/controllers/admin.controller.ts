@@ -2,11 +2,12 @@
 
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { hashPassword, findUserByEmail } from '../services/auth.service';
-import { getUsersFromDB } from '../services/user.service'; // 🆕 DB fetch logic
+import { getUsersFromDB } from '../services/user.service';
 import { db } from '../db';
 import { users } from '../db/schema/core';
 import { idGenerator } from '../utils/idGenerator';
-import { GetUsersQuery } from '../schemas/admin.schema'; // 🆕 Zod-derived type
+import { getUsersQuerySchema } from '../schemas/admin.schema'; // Zod schema
+import { GetUsersQuery } from '../schemas/admin.schema'; // Type for controller use
 
 const allowedRolesByCreator: Record<string, string[]> = {
   superadmin: ['superadmin', 'admin', 'teacher', 'student'],
@@ -29,13 +30,17 @@ export async function createUserHandler(request: FastifyRequest, reply: FastifyR
 
     if (!email || !username || !password || !role) {
       request.log.warn('Missing required fields in create user request');
-      return reply.status(400).send({ error: 'Missing required fields: email, username, password, role.' });
+      return reply.status(400).send({
+        error: 'Missing required fields: email, username, password, role.',
+      });
     }
 
     const allowedRoles = allowedRolesByCreator[creator.role];
     if (!allowedRoles || !allowedRoles.includes(role)) {
       request.log.warn(`Role ${creator.role} not allowed to create user with role ${role}`);
-      return reply.status(403).send({ error: `Your role (${creator.role}) cannot create a user with role '${role}'.` });
+      return reply.status(403).send({
+        error: `Your role (${creator.role}) cannot create a user with role '${role}'.`,
+      });
     }
 
     const existingUser = await findUserByEmail(email);
@@ -65,12 +70,43 @@ export async function createUserHandler(request: FastifyRequest, reply: FastifyR
   }
 }
 
-// ✅ NEW: GET /admin/users handler
 export async function getUsersHandler(request: FastifyRequest, reply: FastifyReply) {
   request.log.info('Received GET /admin/users request');
 
   try {
-    const query = request.query as GetUsersQuery;
+    const parsed = getUsersQuerySchema.safeParse(request.query);
+    if (!parsed.success) {
+      request.log.warn('Invalid query parameters');
+      return reply.status(400).send({ error: 'Invalid query parameters' });
+    }
+
+    const {
+      search,
+      role,
+      roles,
+      page = 1,
+      limit = 25,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      createdBefore,
+      createdAfter,
+      includeSuspended,
+      includeCountOnly,
+    } = parsed.data;
+
+    const query: GetUsersQuery = {
+      search,
+      role,
+      roles,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+      createdBefore,
+      createdAfter,
+      includeSuspended,
+      includeCountOnly,
+    };
 
     const result = await getUsersFromDB(query);
 
