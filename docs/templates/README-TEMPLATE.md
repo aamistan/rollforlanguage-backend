@@ -1,90 +1,73 @@
-/\*\*
+/**
+ * [File Purpose Title]
+ * 
+ * Related Documentation:
+ * /docs/backend/[relevant-doc-name].md
+ * 
+ * Purpose:
+ * - [Brief description of the functionality provided by this file]
+ * - [Integration points, middleware, or plugins utilized]
+ * - [Any notable design decisions, trade-offs, or considerations]
+ * 
+ * Development Mantra:
+ * "We build not for today, but for tomorrow and beyond."
+ */
 
-* Admin User Management System
-*
-* Related Documentation:
-* /docs/frontend/admin-users-dashboard.md
-*
-* Purpose:
-* * Implements complete backend support for admin-level user creation and management
-* * Powers the frontend Admin Users Dashboard and User Table tool
-* * Provides robust filtering, sorting, search, pagination, and RBAC enforcement
-*
-* Development Mantra:
-* "We build not for today, but for tomorrow and beyond."
-  \*/
-
-# Admin User Management System
+# [Module/Service Name]
 
 ## Overview
-
-> This system provides a secure, extensible API for superadmins, admins, and teachers to manage users on the platform. It supports creating users with appropriate role-based restrictions, and fetching paginated user lists with advanced filters and sorting.
+> Briefly describe the core purpose, responsibilities, and scope of this module/service.
 
 ## Location
+> Path to the file within the repository.  
+Example: `/src/services/userService.ts`
 
-> Core logic is split across multiple backend files:
->
-> * `/src/routes/admin.route.ts`
-> * `/src/controllers/admin.controller.ts`
-> * `/src/services/user.service.ts`
-> * `/src/schemas/admin.schema.ts`
+## Endpoints / Methods
+| Endpoint/Method | HTTP Verb (if applicable) | Description |
+|-----------------|---------------------------|-------------|
+| `/users`        | GET                       | Fetches all users from database |
+| `createUser()`  | -                         | Adds a new user to database |
 
-## Features
+## Inputs (Parameters/Arguments)
+| Name          | Type   | Required | Description |
+|---------------|--------|----------|-------------|
+| username      | String | Yes      | The user's unique username |
+| email         | String | Yes      | The user's email address |
+| isActive      | Boolean| No       | User account active state |
 
-* [x] `POST /admin/users` — Securely create new users with role restrictions
-* [x] `GET /admin/users` — Fetch paginated user list with:
+## Outputs / Returns
+| Return Type           | Description                                |
+|-----------------------|--------------------------------------------|
+| UserObject            | Newly created user object with ID and data |
+| Array<UserObject>     | Array of existing user objects             |
 
-  * Role filters (`role`, `roles[]`)
-  * Fuzzy search (`username`, `email`)
-  * Date filtering (`createdBefore`, `createdAfter`)
-  * Sorting (`sortBy`, `sortOrder`)
-  * Pagination (`page`, `limit`)
-  * Inactive user toggle (`includeSuspended`)
-  * Count-only toggle (`includeCountOnly`)
-* [x] Permission enforcement with `request.hasPermission()`
-* [x] JWT auth + global user parsing middleware
-* [x] Zod query validation for strong type safety
-* [x] Fully typed Swagger documentation
-
-## Props
-
-None
-
-## Emits
-
-None
+## Error Handling
+| Error Type           | HTTP Status (if applicable) | Scenario / Description              |
+|----------------------|-----------------------------|-------------------------------------|
+| ValidationError      | 400                         | Required fields missing or invalid  |
+| AuthenticationError  | 401                         | Unauthorized access attempt         |
+| DatabaseError        | 500                         | Issues interacting with the database|
 
 ## Dependencies
+- **External Libraries**
+  - `[Library Name]` — Purpose of the library (e.g., JWT management, ORM)
+- **Internal Modules**
+  - `[Module Name]` — Brief explanation of its usage within this file
 
-* \[drizzle-orm] — Used for querying PlanetScale-backed MySQL schema
-* \[zod] — For validating query strings and generating safe types
-* \[@fastify/jwt] — Provides JWT parsing and validation for access control
-* \[@fastify/swagger] — Used to generate and expose documentation
+## Environment Variables
+| Variable Name  | Default     | Description                   |
+|----------------|-------------|-------------------------------|
+| `JWT_SECRET`   | none        | Secret key used for JWT auth  |
+| `DB_URL`       | none        | Database connection URL       |
 
-## Usage
+## Example Usage
+```typescript
+// Example showing how to call or interact with this module/service
 
-```http
-# Create user
-POST /admin/users
-Authorization: Bearer <accessToken>
-Content-Type: application/json
+import { createUser } from '@/services/userService';
 
-{
-  "email": "newuser@example.com",
-  "username": "newuser",
-  "password": "StrongPassword123!",
-  "role": "teacher"
-}
-```
-
-```http
-# Fetch paginated user list
-GET /admin/users?page=1&limit=25&sortBy=createdAt&sortOrder=desc&roles[]=teacher&search=aaron
-Authorization: Bearer <accessToken>
-```
-
-```http
-# Count-only query for dashboard metrics
-GET /admin/users?includeCountOnly=true&roles[]=student
-Authorization: Bearer <accessToken>
-```
+const newUser = await createUser({
+  username: 'exampleUser',
+  email: 'user@example.com',
+  isActive: true,
+});

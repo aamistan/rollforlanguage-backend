@@ -2,43 +2,48 @@
  * [File Purpose Title]
  * 
  * Related Documentation:
- * /docs/frontend/[relevant-doc-name].md
+ * /docs/backend/[relevant-doc-name].md
  * 
  * Purpose:
- * - [Short bullet 1: What this file sets up or accomplishes]
- * - [Short bullet 2: Any integrations or links]
- * - [Short bullet 3: Anything else notable]
+ * - [Brief summary of what this file/module achieves]
+ * - [Integration points, middleware, or services involved]
+ * - [Any special considerations or decisions]
  * 
  * Development Mantra:
  * "We build not for today, but for tomorrow and beyond."
  */
 
-# [Component Name] Component (Mini Doc)
+# [Module/Service Name] (Mini Doc)
 
 ## Overview
-> One to two sentences describing what this component does.
+> Short summary describing the primary responsibility of this module/service.
 
 ## Location
-> Repo path.  
-Example: `/src/components/common/ButtonPrimary.vue`
+> Repository path.  
+Example: `/src/services/authService.ts`
 
-## Key Features
+## Core Methods/Endpoints
 - Brief list (2–3 bullet points max)
 
-## Props
+## Inputs
 | Name | Type | Description |
 |:-----|:-----|:------------|
-|  |  |  |
+|      |      |             |
 
-*(If no props, write: "None")*
+*(If no inputs, write: "None")*
 
-## Emits
-| Event Name | Payload | Description |
-|:-----------|:--------|:------------|
-|  |  |  |
+## Outputs
+| Type | Description |
+|:-----|:------------|
+|      |             |
 
-*(If no emits, write: "None")*
+*(If no outputs, write: "None")*
+
+## Error Handling
+- List main errors/exceptions this file handles or throws
 
 ## Usage Example
-```vue
-<ButtonPrimary label="Click me!" />
+```typescript
+import { loginUser } from '@/services/authService';
+
+const user = await loginUser('user@example.com', 'password');
