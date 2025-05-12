@@ -20,6 +20,7 @@ export const characterClasses = mysqlTable('character_classes', {
   iconUrl: varchar('icon_url', { length: 255 }),
   isPlayable: boolean('is_playable').default(true),
   createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date', }).defaultNow().onUpdateNow(),
 });
 
 //
@@ -28,7 +29,7 @@ export const classStatBonuses = mysqlTable('class_stat_bonuses', {
   id: varchar('id', { length: 36 }).primaryKey(),
   classId: varchar('class_id', { length: 36 }).notNull(),
   statName: varchar('stat_name', { length: 50 }).notNull(),
-  statBonus: int('stat_bonus').default(0),
+  statBonus: int('stat_bonus').notNull().default(0),
 });
 
 //
