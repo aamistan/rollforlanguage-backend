@@ -1,3 +1,5 @@
+// src/config/env.ts
+
 import dotenv from 'dotenv';
 import { z } from 'zod';
 
@@ -18,6 +20,12 @@ const envSchema = z.object({
   DB_NAME: z.string(),
 
   JWT_SECRET: z.string(),
+
+  // ✅ Backblaze B2 integration
+  B2_APPLICATION_KEY_ID: z.string(),
+  B2_APPLICATION_KEY: z.string(),
+  B2_BUCKET_NAME: z.string(),
+  B2_PUBLIC_URL: z.string().url(), // must be a valid URL
 });
 
 const envResult = envSchema.safeParse(process.env);
