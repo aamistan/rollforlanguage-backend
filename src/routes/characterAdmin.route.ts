@@ -23,7 +23,7 @@ import {
  * "We build not for today, but for tomorrow and beyond."
  */
 
-export async function adminCharacterRoutes(app: FastifyInstance) {
+export async function characterAdminRoutes(app: FastifyInstance) {
   app.register(async function (admin) {
     // ✅ Global protection: JWT + manage_characters required
     admin.addHook('onRequest', async (request, reply) => {
