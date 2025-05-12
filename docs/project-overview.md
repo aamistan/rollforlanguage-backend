@@ -340,3 +340,49 @@ Key Files:
 ✅ Treat it as the **single source of truth** for backend progress and decisions
 
 ---
+
+### 1️⃣2️⃣ Admin Character Class Management System
+
+<details>
+<summary>View details</summary>
+
+✅ Full CRUD for `/admin/characters/classes` with multi-table hydration
+✅ Hydrated responses include tags, stat bonuses, and passive abilities
+✅ Modular services use normalized schema structure
+✅ Controllers use Zod-validated input with structured hydration return
+✅ Strict RBAC enforcement via `manage_characters` permission
+
+**Endpoints Implemented:**
+
+| Endpoint                        | Verb   | Description                             |
+| ------------------------------- | ------ | --------------------------------------- |
+| `/admin/characters/classes`     | GET    | Paginated list of all classes           |
+| `/admin/characters/classes/:id` | GET    | Fully hydrated single class by ID       |
+| `/admin/characters/classes`     | POST   | Creates class + stat bonuses, tags, etc |
+| `/admin/characters/classes/:id` | PATCH  | Fully replaces class + related data     |
+| `/admin/characters/classes/:id` | DELETE | Deletes class and all linked records    |
+
+**Data Hydrated:**
+
+* `tags` — from `class_tags` and `class_tag_links`
+* `statBonuses` — from `class_stat_bonuses` (as `{ [stat]: number }`)
+* `passiveAbilities` — from `class_passives` (as `string[]`)
+
+**Key Design Features:**
+
+* ✅ Clean separation of schema, controller, and service logic
+* ✅ Uses custom `idGenerator()` for all insertable records
+* ✅ Class tag system supports reuse and dynamic linking
+* ✅ Mutation endpoints overwrite related tables for consistency
+
+**Key Files:**
+
+* `/src/routes/characterAdmin.route.ts`
+* `/src/controllers/adminCharacter.controller.ts`
+* `/src/services/characterClass.service.ts`
+* `/src/schemas/adminCharacter.schema.ts`
+* `/src/db/schema/character_classes.ts`
+
+</details>
+
+---
