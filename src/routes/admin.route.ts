@@ -2,7 +2,11 @@
 import type {} from '../types/fastify';
 
 import { FastifyInstance } from 'fastify';
-import { createUserHandler, getUsersHandler } from '../controllers/admin.controller';
+import {
+  createUserHandler,
+  getUsersHandler,
+  getUserMetricsHandler, // 🆕
+} from '../controllers/admin.controller';
 
 /**
  * Admin Routes
@@ -10,7 +14,7 @@ import { createUserHandler, getUsersHandler } from '../controllers/admin.control
  * Purpose:
  * - Handles administrative endpoints related to user management
  * - Integrates permission gate for superadmin, admin, and teacher controls
- * - Powers user creation and paginated user table query for admin dashboard
+ * - Powers user creation and admin dashboard data tools (tables + metrics)
  * 
  * Development Mantra:
  * "We build not for today, but for tomorrow and beyond."
@@ -72,6 +76,17 @@ export async function adminRoutes(app: FastifyInstance) {
           'Returns filtered, sortable, paginated user data. Supports role filters, date range, and future enhancements.',
       },
       handler: getUsersHandler,
+    });
+
+    // 📊 GET /admin/users/metrics — aggregate user stats for dashboard widget
+    admin.get('/users/metrics', {
+      schema: {
+        tags: ['Admin'],
+        summary: 'Get user statistics for admin overview widget',
+        description:
+          'Returns total, active, suspended user counts, role distribution, and new users in the last 7 days.',
+      },
+      handler: getUserMetricsHandler,
     });
   }, { prefix: '/admin' });
 }

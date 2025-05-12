@@ -8,6 +8,7 @@ import { users } from '../db/schema/core';
 import { idGenerator } from '../utils/idGenerator';
 import { getUsersQuerySchema } from '../schemas/admin.schema'; // Zod schema
 import { GetUsersQuery } from '../schemas/admin.schema'; // Type for controller use
+import { count, eq, gte } from 'drizzle-orm';
 
 const allowedRolesByCreator: Record<string, string[]> = {
   superadmin: ['superadmin', 'admin', 'teacher', 'student'],
@@ -114,5 +115,60 @@ export async function getUsersHandler(request: FastifyRequest, reply: FastifyRep
   } catch (err) {
     request.log.error(`Error in getUsersHandler: ${err}`);
     return reply.status(500).send({ error: 'Failed to retrieve users' });
+  }
+}
+
+export async function getUserMetricsHandler(request: FastifyRequest, reply: FastifyReply) {
+  request.log.info('Received GET /admin/users/metrics request');
+
+  try {
+    // Count total users
+    const [{ count: totalUsers }] = await db
+      .select({ count: count() })
+      .from(users);
+
+    // Count active users (is_active = true)
+    const [{ count: activeUsers }] = await db
+      .select({ count: count() })
+      .from(users)
+      .where(eq(users.isActive, true));
+
+    // Count suspended users (is_active = false)
+    const [{ count: suspendedUsers }] = await db
+      .select({ count: count() })
+      .from(users)
+      .where(eq(users.isActive, false));
+
+    // Count by role
+    const rolesRaw = await db
+      .select({ role: users.roleId, count: count() })
+      .from(users)
+      .groupBy(users.roleId);
+
+    const roles: Record<string, number> = {};
+    for (const row of rolesRaw) {
+      roles[row.role] = Number(row.count);
+    }
+
+    // Count new users in past 7 days
+    const now = new Date();
+    const sevenDaysAgo = new Date(now);
+    sevenDaysAgo.setDate(now.getDate() - 7);
+
+    const [{ count: newUsersPast7Days }] = await db
+      .select({ count: count() })
+      .from(users)
+      .where(gte(users.createdAt, sevenDaysAgo));
+
+    return reply.status(200).send({
+      totalUsers: Number(totalUsers),
+      activeUsers: Number(activeUsers),
+      suspendedUsers: Number(suspendedUsers),
+      roles,
+      newUsersPast7Days: Number(newUsersPast7Days),
+    });
+  } catch (err) {
+    request.log.error(`Error in getUserMetricsHandler: ${err}`);
+    return reply.status(500).send({ error: 'Failed to retrieve user metrics' });
   }
 }
