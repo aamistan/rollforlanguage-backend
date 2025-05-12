@@ -298,6 +298,41 @@ Key Files:
 
 ---
 
+Here's the ✨ updated block for your **Project Overview** to include the newly completed `GET /admin/users/metrics` endpoint and its backend infrastructure.
+
+You can append this directly after the existing **Admin User Management System** section as **Section 11️⃣**:
+
+---
+
+### 1️⃣1️⃣ Admin User Metrics Endpoint
+
+<details>
+<summary>View details</summary>
+
+✅ `GET /admin/users/metrics` returns dashboard-ready user statistics in bulk
+
+**Metrics Returned:**
+
+* `totalUsers` — all users in the system
+* `activeUsers` — users with `is_active = true`
+* `suspendedUsers` — users with `is_active = false`
+* `roles` — object mapping each role to its user count
+* `newUsersPast7Days` — count of accounts created in the past 7 days
+
+**Security:**
+
+* JWT auth enforced (`Bearer <accessToken>`)
+* Permission required: `request.hasPermission('manage_users')`
+
+Key Files:
+
+* `/src/routes/admin.route.ts`
+* `/src/controllers/admin.controller.ts`
+
+</details>
+
+---
+
 ## 📋 How to Use This Document
 
 ✅ Update this overview **after each major backend milestone**
