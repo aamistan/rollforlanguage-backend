@@ -18,6 +18,7 @@ import { adminRoutes } from './routes/admin.route';
 import { characterAdminRoutes } from './routes/characterAdmin.route';
 import { characterTagAdminRoutes } from './routes/characterTagAdmin.route';
 import { characterStatAdminRoutes } from './routes/characterStatAdmin.route';
+import { characterPassiveAdminRoutes } from './routes/characterPassiveAdmin.route';
 
 const app = Fastify({
   logger: true,
@@ -51,6 +52,7 @@ app.register(adminRoutes);
 app.register(characterAdminRoutes);
 app.register(characterTagAdminRoutes);
 app.register(characterStatAdminRoutes);
+app.register(characterPassiveAdminRoutes);
 
 // 🧯 Global error handler
 app.setErrorHandler((error, request, reply) => {
