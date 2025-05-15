@@ -61,5 +61,5 @@ app.setErrorHandler((error, request, reply) => {
   app.log.error(`Global error handler caught: ${error.message}`);
   reply.status(500).send({ error: 'Internal Server Error', message: error.message });
 });
-
+// 
 export default app;
