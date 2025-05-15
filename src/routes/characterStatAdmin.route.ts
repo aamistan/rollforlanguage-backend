@@ -6,6 +6,7 @@ import {
   createStatHandler,
   updateStatHandler,
   deleteStatHandler,
+  patchStatActiveHandler, // 🆕 soft-delete / restore
 } from '../controllers/adminCharacterStat.controller';
 
 /**
@@ -16,6 +17,7 @@ import {
  * 
  * Purpose:
  * - Enables stat validation, glossary use, and dropdown-driven UI
+ * - Supports soft-deletion and reactivation of stats via isActive flag
  * - All routes protected by `manage_characters` permission
  * 
  * Development Mantra:
@@ -36,5 +38,8 @@ export async function characterStatAdminRoutes(app: FastifyInstance) {
     statRoutes.post('/characters/stats', createStatHandler);
     statRoutes.patch('/characters/stats/:id', updateStatHandler);
     statRoutes.delete('/characters/stats/:id', deleteStatHandler);
+
+    // 🔁 Soft-delete and restore toggle
+    statRoutes.patch('/characters/stats/:id/active', patchStatActiveHandler);
   }, { prefix: '/admin' });
 }
