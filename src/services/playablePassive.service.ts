@@ -1,7 +1,7 @@
 // src/services/characterPassive.service.ts
 
 import { db } from '../db';
-import { characterPassives } from '../db/schema/character_passives';
+import { characterPassives } from '../db/schema/playeable_passives';
 import { eq } from 'drizzle-orm';
 import { idGenerator } from '../utils/idGenerator';
 

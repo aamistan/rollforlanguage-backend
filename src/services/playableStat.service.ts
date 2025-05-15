@@ -2,18 +2,18 @@
 
 import { db } from '../db';
 import { classStatBonuses } from '../db/schema/character_classes';
-import { characterStats } from '../db/schema/character_stats';
+import { playableStats } from '../db/schema/playable_stats';
 import { eq, count } from 'drizzle-orm';
 import { idGenerator } from '../utils/idGenerator';
 
 export async function getAllStats(includeInactive = false) {
   const query = db
     .select()
-    .from(characterStats)
-    .orderBy(characterStats.sortOrder, characterStats.displayName);
+    .from(playableStats)
+    .orderBy(playableStats.sortOrder, characterStats.displayName);
 
   if (!includeInactive) {
-    query.where(eq(characterStats.isActive, true));
+    query.where(eq(playableStats.isActive, true));
   }
 
   return await query;
@@ -22,8 +22,8 @@ export async function getAllStats(includeInactive = false) {
 export async function getStatById(id: string) {
   const [stat] = await db
     .select()
-    .from(characterStats)
-    .where(eq(characterStats.id, id));
+    .from(playableStats)
+    .where(eq(playableStats.id, id));
 
   return stat || null;
 }
@@ -37,7 +37,7 @@ export async function createStat(
   const id = idGenerator(36);
   const now = new Date();
 
-  await db.insert(characterStats).values({
+  await db.insert(playableStats).values({
     id,
     name,
     displayName,
@@ -57,18 +57,18 @@ export async function updateStat(
 ) {
   const now = new Date();
 
-  await db.update(characterStats)
+  await db.update(playableStats)
     .set({ ...updates, updatedAt: now })
-    .where(eq(characterStats.id, id));
+    .where(eq(playableStats.id, id));
 
   return await getStatById(id);
 }
 
 export async function setStatActiveState(id: string, isActive: boolean): Promise<boolean> {
   const result = await db
-    .update(characterStats)
+    .update(playableStats)
     .set({ isActive, updatedAt: new Date() })
-    .where(eq(characterStats.id, id));
+    .where(eq(playableStats.id, id));
 
   return !!result;
 }
@@ -85,12 +85,12 @@ export async function deleteStat(id: string): Promise<boolean> {
   }
 
   const [existing] = await db
-    .select({ id: characterStats.id })
-    .from(characterStats)
-    .where(eq(characterStats.id, id));
+    .select({ id: playableStats.id })
+    .from(playableStats)
+    .where(eq(playableStats.id, id));
 
   if (!existing) return false;
 
-  await db.delete(characterStats).where(eq(characterStats.id, id));
+  await db.delete(playableStats).where(eq(characterStats.id, id));
   return true;
 }

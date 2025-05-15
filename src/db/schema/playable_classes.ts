@@ -1,5 +1,3 @@
-// /src/db/schema/character_classes.ts
-
 import {
   mysqlTable,
   varchar,
@@ -10,9 +8,9 @@ import {
 } from 'drizzle-orm/mysql-core';
 
 //
-// CHARACTER CLASSES
+// 🧙‍♂️ PLAYABLE CLASSES
 //
-export const characterClasses = mysqlTable('character_classes', {
+export const playableClasses = mysqlTable('playable_classes', {
   id: varchar('id', { length: 36 }).primaryKey(),
   name: varchar('name', { length: 100 }).notNull().unique(),
   description: text('description'),
@@ -20,12 +18,13 @@ export const characterClasses = mysqlTable('character_classes', {
   iconUrl: varchar('icon_url', { length: 255 }),
   isPlayable: boolean('is_playable').default(true),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at', { mode: 'date', }).defaultNow().onUpdateNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().onUpdateNow(),
 });
 
 //
-// CLASS STAT BONUSES (one-to-many)
-export const classStatBonuses = mysqlTable('class_stat_bonuses', {
+// ⚙️ STAT BONUSES (one-to-many)
+//
+export const playableClassStatBonuses = mysqlTable('playable_class_stat_bonuses', {
   id: varchar('id', { length: 36 }).primaryKey(),
   classId: varchar('class_id', { length: 36 }).notNull(),
   statName: varchar('stat_name', { length: 50 }).notNull(),
@@ -33,8 +32,9 @@ export const classStatBonuses = mysqlTable('class_stat_bonuses', {
 });
 
 //
-// CLASS PASSIVES (one-to-many)
-export const classPassives = mysqlTable('class_passives', {
+// 🧠 PASSIVES (one-to-many)
+//
+export const playableClassPassives = mysqlTable('playable_class_passives', {
   id: varchar('id', { length: 36 }).primaryKey(),
   classId: varchar('class_id', { length: 36 }).notNull(),
   name: varchar('name', { length: 100 }).notNull(),
@@ -42,8 +42,9 @@ export const classPassives = mysqlTable('class_passives', {
 });
 
 //
-// CLASS TAGS (many-to-many via linking table)
-export const classTags = mysqlTable('class_tags', {
+// 🏷 TAGS (many-to-many glossary)
+//
+export const playableTags = mysqlTable('playable_tags', {
   id: varchar('id', { length: 36 }).primaryKey(),
   name: varchar('name', { length: 50 }).notNull().unique(),
   description: text('description'),
@@ -53,8 +54,10 @@ export const classTags = mysqlTable('class_tags', {
   updatedAt: timestamp('updated_at').onUpdateNow().defaultNow(),
 });
 
-
-export const classTagLinks = mysqlTable('class_tag_links', {
+//
+// 🧩 CLASS–TAG LINK (many-to-many join)
+//
+export const playableClassTagLinks = mysqlTable('playable_class_tag_links', {
   id: varchar('id', { length: 36 }).primaryKey(),
   classId: varchar('class_id', { length: 36 }).notNull(),
   tagId: varchar('tag_id', { length: 36 }).notNull(),

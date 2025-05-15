@@ -37,6 +37,16 @@ CREATE TABLE `leaderboards` (
 	CONSTRAINT `leaderboards_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `character_passives` (
+	`id` varchar(36) NOT NULL,
+	`name` varchar(100) NOT NULL,
+	`description` text,
+	`created_at` timestamp DEFAULT (now()),
+	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `character_passives_id` PRIMARY KEY(`id`),
+	CONSTRAINT `character_passives_name_unique` UNIQUE(`name`)
+);
+--> statement-breakpoint
 CREATE TABLE `abilities` (
 	`id` varchar(36) NOT NULL,
 	`name` varchar(100) NOT NULL,
@@ -70,10 +80,15 @@ CREATE TABLE `character_skills` (
 --> statement-breakpoint
 CREATE TABLE `character_stats` (
 	`id` varchar(36) NOT NULL,
-	`character_id` varchar(36) NOT NULL,
-	`stat_name` varchar(50) NOT NULL,
-	`stat_value` int DEFAULT 0,
-	CONSTRAINT `character_stats_id` PRIMARY KEY(`id`)
+	`name` varchar(50) NOT NULL,
+	`display_name` varchar(100) NOT NULL,
+	`description` text,
+	`is_active` boolean DEFAULT true,
+	`sort_order` int DEFAULT 0,
+	`created_at` timestamp DEFAULT (now()),
+	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `character_stats_id` PRIMARY KEY(`id`),
+	CONSTRAINT `character_stats_name_unique` UNIQUE(`name`)
 );
 --> statement-breakpoint
 CREATE TABLE `characters` (
@@ -101,6 +116,38 @@ CREATE TABLE `skills` (
 	CONSTRAINT `skills_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `class_enrollments` (
+	`id` varchar(36) NOT NULL,
+	`class_id` varchar(36) NOT NULL,
+	`student_id` varchar(36) NOT NULL,
+	`status` varchar(20) DEFAULT 'active',
+	`joined_at` timestamp DEFAULT (now()),
+	CONSTRAINT `class_enrollments_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `classes` (
+	`id` varchar(36) NOT NULL,
+	`teacher_id` varchar(36) NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`description` text,
+	`join_code` varchar(20) NOT NULL,
+	`max_students` int,
+	`is_active` boolean DEFAULT true,
+	`created_at` timestamp DEFAULT (now()),
+	CONSTRAINT `classes_id` PRIMARY KEY(`id`),
+	CONSTRAINT `classes_join_code_unique` UNIQUE(`join_code`)
+);
+--> statement-breakpoint
+CREATE TABLE `teacher_profiles` (
+	`user_id` varchar(36) NOT NULL,
+	`school_name` varchar(255),
+	`department` varchar(100),
+	`bio` text,
+	`created_at` timestamp DEFAULT (now()),
+	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `teacher_profiles_user_id` PRIMARY KEY(`user_id`)
+);
+--> statement-breakpoint
 CREATE TABLE `auth_providers` (
 	`id` varchar(36) NOT NULL,
 	`user_id` varchar(36) NOT NULL,
@@ -119,6 +166,16 @@ CREATE TABLE `login_sessions` (
 	CONSTRAINT `login_sessions_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `refresh_tokens` (
+	`id` varchar(36) NOT NULL,
+	`user_id` varchar(36) NOT NULL,
+	`token` varchar(255) NOT NULL,
+	`is_revoked` boolean DEFAULT false,
+	`created_at` timestamp DEFAULT (now()),
+	`expires_at` timestamp NOT NULL,
+	CONSTRAINT `refresh_tokens_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `roles` (
 	`id` varchar(36) NOT NULL,
 	`name` varchar(50) NOT NULL,
@@ -133,12 +190,87 @@ CREATE TABLE `users` (
 	`email` varchar(255) NOT NULL,
 	`password_hash` varchar(255) NOT NULL,
 	`role_id` varchar(36) NOT NULL,
+	`username` varchar(100) NOT NULL,
 	`display_name` varchar(100),
+	`gender_identity` varchar(100),
+	`pronouns` varchar(100),
+	`is_verified` boolean DEFAULT false,
+	`is_active` boolean DEFAULT true,
 	`created_at` timestamp DEFAULT (now()),
 	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
-	`is_active` boolean DEFAULT true,
 	CONSTRAINT `users_id` PRIMARY KEY(`id`),
-	CONSTRAINT `users_email_unique` UNIQUE(`email`)
+	CONSTRAINT `users_email_unique` UNIQUE(`email`),
+	CONSTRAINT `users_username_unique` UNIQUE(`username`)
+);
+--> statement-breakpoint
+CREATE TABLE `armor_details` (
+	`id` varchar(36) NOT NULL,
+	`item_id` varchar(36) NOT NULL,
+	`defense_power` int DEFAULT 0,
+	`weight` int DEFAULT 0,
+	`resistances` text,
+	CONSTRAINT `armor_details_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `character_equipment` (
+	`id` varchar(36) NOT NULL,
+	`character_id` varchar(36) NOT NULL,
+	`slot_id` varchar(36) NOT NULL,
+	`item_id` varchar(36) NOT NULL,
+	`equipped_at` timestamp DEFAULT (now()),
+	CONSTRAINT `character_equipment_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `character_inventory` (
+	`id` varchar(36) NOT NULL,
+	`character_id` varchar(36) NOT NULL,
+	`item_id` varchar(36) NOT NULL,
+	`quantity` int DEFAULT 1,
+	`acquired_at` timestamp DEFAULT (now()),
+	CONSTRAINT `character_inventory_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `equipment_slots` (
+	`id` varchar(36) NOT NULL,
+	`name` varchar(50) NOT NULL,
+	`description` text,
+	CONSTRAINT `equipment_slots_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `item_modifiers` (
+	`id` varchar(36) NOT NULL,
+	`item_id` varchar(36) NOT NULL,
+	`modifier_id` varchar(36) NOT NULL,
+	`effect_description` text,
+	CONSTRAINT `item_modifiers_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `items` (
+	`id` varchar(36) NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`type` varchar(50) NOT NULL,
+	`description` text,
+	`rarity` varchar(50),
+	`base_value` int DEFAULT 0,
+	`created_at` timestamp DEFAULT (now()),
+	CONSTRAINT `items_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `potion_details` (
+	`id` varchar(36) NOT NULL,
+	`item_id` varchar(36) NOT NULL,
+	`effect` text,
+	`duration_seconds` int,
+	CONSTRAINT `potion_details_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `weapon_details` (
+	`id` varchar(36) NOT NULL,
+	`item_id` varchar(36) NOT NULL,
+	`attack_power` int DEFAULT 0,
+	`attack_speed` int DEFAULT 0,
+	`special_effect` text,
+	CONSTRAINT `weapon_details_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `answers` (
@@ -254,6 +386,110 @@ CREATE TABLE `media_assets` (
 	CONSTRAINT `media_assets_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `playable_class_passives` (
+	`id` varchar(36) NOT NULL,
+	`class_id` varchar(36) NOT NULL,
+	`name` varchar(100) NOT NULL,
+	`effect` text,
+	CONSTRAINT `playable_class_passives_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `playable_class_stat_bonuses` (
+	`id` varchar(36) NOT NULL,
+	`class_id` varchar(36) NOT NULL,
+	`stat_name` varchar(50) NOT NULL,
+	`stat_bonus` int NOT NULL DEFAULT 0,
+	CONSTRAINT `playable_class_stat_bonuses_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `playable_class_tag_links` (
+	`id` varchar(36) NOT NULL,
+	`class_id` varchar(36) NOT NULL,
+	`tag_id` varchar(36) NOT NULL,
+	CONSTRAINT `playable_class_tag_links_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `playable_classes` (
+	`id` varchar(36) NOT NULL,
+	`name` varchar(100) NOT NULL,
+	`description` text,
+	`lore` text,
+	`icon_url` varchar(255),
+	`is_playable` boolean DEFAULT true,
+	`created_at` timestamp DEFAULT (now()),
+	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `playable_classes_id` PRIMARY KEY(`id`),
+	CONSTRAINT `playable_classes_name_unique` UNIQUE(`name`)
+);
+--> statement-breakpoint
+CREATE TABLE `playable_tags` (
+	`id` varchar(36) NOT NULL,
+	`name` varchar(50) NOT NULL,
+	`description` text,
+	`is_active` boolean DEFAULT true,
+	`sort_order` int DEFAULT 0,
+	`created_at` timestamp DEFAULT (now()),
+	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `playable_tags_id` PRIMARY KEY(`id`),
+	CONSTRAINT `playable_tags_name_unique` UNIQUE(`name`)
+);
+--> statement-breakpoint
+CREATE TABLE `character_species` (
+	`id` varchar(36) NOT NULL,
+	`name` varchar(100) NOT NULL,
+	`description` text,
+	`alignment` varchar(50),
+	`size_category` varchar(50),
+	`movement_type` varchar(50),
+	`base_movement_speed` int,
+	`visual_trait` varchar(100),
+	`created_at` timestamp DEFAULT (now()),
+	CONSTRAINT `character_species_id` PRIMARY KEY(`id`),
+	CONSTRAINT `character_species_name_unique` UNIQUE(`name`)
+);
+--> statement-breakpoint
+CREATE TABLE `species_abilities` (
+	`id` varchar(36) NOT NULL,
+	`species_id` varchar(36) NOT NULL,
+	`ability_name` varchar(100) NOT NULL,
+	`description` text,
+	`is_passive` boolean DEFAULT false,
+	CONSTRAINT `species_abilities_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `species_lore` (
+	`id` varchar(36) NOT NULL,
+	`species_id` varchar(36) NOT NULL,
+	`lore_entry` text NOT NULL,
+	`created_at` timestamp DEFAULT (now()),
+	CONSTRAINT `species_lore_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `species_stat_bonuses` (
+	`id` varchar(36) NOT NULL,
+	`species_id` varchar(36) NOT NULL,
+	`stat_name` varchar(50) NOT NULL,
+	`bonus_value` int DEFAULT 0,
+	CONSTRAINT `species_stat_bonuses_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `species_tags` (
+	`id` varchar(36) NOT NULL,
+	`species_id` varchar(36) NOT NULL,
+	`tag` varchar(50),
+	CONSTRAINT `species_tags_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `character_tags` (
+	`id` varchar(36) NOT NULL,
+	`name` varchar(50) NOT NULL,
+	`description` text,
+	`created_at` timestamp DEFAULT (now()),
+	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `character_tags_id` PRIMARY KEY(`id`),
+	CONSTRAINT `character_tags_name_unique` UNIQUE(`name`)
+);
+--> statement-breakpoint
 CREATE TABLE `campaigns` (
 	`id` varchar(36) NOT NULL,
 	`title` varchar(255) NOT NULL,
@@ -361,27 +597,43 @@ CREATE TABLE `party_members` (
 	CONSTRAINT `party_members_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-ALTER TABLE `character_achievement_unlocks` ADD CONSTRAINT `character_achievement_unlocks_achievement_id_achievements_id_fk` FOREIGN KEY (`achievement_id`) REFERENCES `achievements`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `leaderboard_entries` ADD CONSTRAINT `leaderboard_entries_leaderboard_id_leaderboards_id_fk` FOREIGN KEY (`leaderboard_id`) REFERENCES `leaderboards`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `character_abilities` ADD CONSTRAINT `character_abilities_character_id_characters_id_fk` FOREIGN KEY (`character_id`) REFERENCES `characters`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `character_abilities` ADD CONSTRAINT `character_abilities_ability_id_abilities_id_fk` FOREIGN KEY (`ability_id`) REFERENCES `abilities`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `character_modifiers` ADD CONSTRAINT `character_modifiers_character_id_characters_id_fk` FOREIGN KEY (`character_id`) REFERENCES `characters`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `character_modifiers` ADD CONSTRAINT `character_modifiers_modifier_id_modifiers_id_fk` FOREIGN KEY (`modifier_id`) REFERENCES `modifiers`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `character_skills` ADD CONSTRAINT `character_skills_character_id_characters_id_fk` FOREIGN KEY (`character_id`) REFERENCES `characters`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `character_skills` ADD CONSTRAINT `character_skills_skill_id_skills_id_fk` FOREIGN KEY (`skill_id`) REFERENCES `skills`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `character_stats` ADD CONSTRAINT `character_stats_character_id_characters_id_fk` FOREIGN KEY (`character_id`) REFERENCES `characters`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `auth_providers` ADD CONSTRAINT `auth_providers_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `login_sessions` ADD CONSTRAINT `login_sessions_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `users` ADD CONSTRAINT `users_role_id_roles_id_fk` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `answers` ADD CONSTRAINT `answers_question_id_questions_id_fk` FOREIGN KEY (`question_id`) REFERENCES `questions`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `lesson_sections` ADD CONSTRAINT `lesson_sections_lesson_id_lessons_id_fk` FOREIGN KEY (`lesson_id`) REFERENCES `lessons`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `lessons` ADD CONSTRAINT `lessons_language_id_languages_id_fk` FOREIGN KEY (`language_id`) REFERENCES `languages`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `questions` ADD CONSTRAINT `questions_quiz_id_quizzes_id_fk` FOREIGN KEY (`quiz_id`) REFERENCES `quizzes`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `quizzes` ADD CONSTRAINT `quizzes_lesson_id_lessons_id_fk` FOREIGN KEY (`lesson_id`) REFERENCES `lessons`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `audio_feedback` ADD CONSTRAINT `audio_feedback_audio_upload_id_audio_uploads_id_fk` FOREIGN KEY (`audio_upload_id`) REFERENCES `audio_uploads`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `character_quest_progress` ADD CONSTRAINT `character_quest_progress_quest_id_quests_id_fk` FOREIGN KEY (`quest_id`) REFERENCES `quests`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `quest_objective_links` ADD CONSTRAINT `quest_objective_links_quest_id_quests_id_fk` FOREIGN KEY (`quest_id`) REFERENCES `quests`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `quest_objective_links` ADD CONSTRAINT `quest_objective_links_objective_id_quest_objectives_id_fk` FOREIGN KEY (`objective_id`) REFERENCES `quest_objectives`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `quest_rewards` ADD CONSTRAINT `quest_rewards_quest_id_quests_id_fk` FOREIGN KEY (`quest_id`) REFERENCES `quests`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `quests` ADD CONSTRAINT `quests_campaign_id_campaigns_id_fk` FOREIGN KEY (`campaign_id`) REFERENCES `campaigns`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `party_members` ADD CONSTRAINT `party_members_party_id_parties_id_fk` FOREIGN KEY (`party_id`) REFERENCES `parties`(`id`) ON DELETE no action ON UPDATE no action;
+CREATE TABLE `admin_logs` (
+	`id` varchar(36) NOT NULL,
+	`admin_id` varchar(36) NOT NULL,
+	`action` varchar(255) NOT NULL,
+	`details` text,
+	`created_at` timestamp DEFAULT (now()),
+	CONSTRAINT `admin_logs_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `bans` (
+	`id` varchar(36) NOT NULL,
+	`user_id` varchar(36) NOT NULL,
+	`reason` text NOT NULL,
+	`banned_by` varchar(36) NOT NULL,
+	`created_at` timestamp DEFAULT (now()),
+	`expires_at` timestamp,
+	CONSTRAINT `bans_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `settings` (
+	`id` varchar(36) NOT NULL,
+	`key` varchar(255) NOT NULL,
+	`value` text NOT NULL,
+	`description` text,
+	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `settings_id` PRIMARY KEY(`id`),
+	CONSTRAINT `settings_key_unique` UNIQUE(`key`)
+);
+--> statement-breakpoint
+CREATE TABLE `support_tickets` (
+	`id` varchar(36) NOT NULL,
+	`user_id` varchar(36) NOT NULL,
+	`subject` varchar(255) NOT NULL,
+	`description` text NOT NULL,
+	`status` varchar(50) DEFAULT 'open',
+	`created_at` timestamp DEFAULT (now()),
+	`updated_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	`resolved_at` timestamp,
+	CONSTRAINT `support_tickets_id` PRIMARY KEY(`id`)
+);

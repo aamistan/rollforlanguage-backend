@@ -7,7 +7,7 @@ import {
   updateTagHandler,
   deleteTagHandler,
   patchTagActiveHandler, // 🆕 Soft delete / restore
-} from '../controllers/adminCharacterTag.controller';
+} from '../controllers/adminPlayableTag.controller';
 
 /**
  * Character Tag Admin Routes
@@ -24,7 +24,7 @@ import {
  * "We build not for today, but for tomorrow and beyond."
  */
 
-export async function characterTagAdminRoutes(app: FastifyInstance) {
+export async function playableTagAdminRoutes(app: FastifyInstance) {
   app.register(async function (tagRoutes) {
     tagRoutes.addHook('onRequest', async (request, reply) => {
       await request.jwtVerify();

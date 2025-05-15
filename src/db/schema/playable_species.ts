@@ -7,29 +7,36 @@ import {
   timestamp,
 } from 'drizzle-orm/mysql-core';
 
-// Master table: Character Species
-export const characterSpecies = mysqlTable('character_species', {
+//
+// 🧬 PLAYABLE SPECIES MASTER TABLE
+//
+export const playableSpecies = mysqlTable('playable_species', {
   id: varchar('id', { length: 36 }).primaryKey(),
   name: varchar('name', { length: 100 }).notNull().unique(),
   description: text('description'),
-  alignment: varchar('alignment', { length: 50 }), // e.g., neutral, chaotic, lawful
-  sizeCategory: varchar('size_category', { length: 50 }), // e.g., small, medium, large
-  movementType: varchar('movement_type', { length: 50 }), // e.g., walking, flying, swimming
+  alignment: varchar('alignment', { length: 50 }), // e.g., neutral, chaotic
+  sizeCategory: varchar('size_category', { length: 50 }), // e.g., small, medium
+  movementType: varchar('movement_type', { length: 50 }), // e.g., walking, flying
   baseMovementSpeed: int('base_movement_speed'), // e.g., 30 feet
-  visualTrait: varchar('visual_trait', { length: 100 }), // cosmetic traits like "horned", "glowing eyes"
+  visualTrait: varchar('visual_trait', { length: 100 }), // e.g., horned, glowing eyes
   createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().onUpdateNow(),
 });
 
-// Species Stat Bonuses
-export const speciesStatBonuses = mysqlTable('species_stat_bonuses', {
+//
+// ⚙️ STAT BONUSES
+//
+export const playableSpeciesStatBonuses = mysqlTable('playable_species_stat_bonuses', {
   id: varchar('id', { length: 36 }).primaryKey(),
   speciesId: varchar('species_id', { length: 36 }).notNull(),
-  statName: varchar('stat_name', { length: 50 }).notNull(), // e.g., strength
+  statName: varchar('stat_name', { length: 50 }).notNull(),
   bonusValue: int('bonus_value').default(0),
 });
 
-// Species Abilities
-export const speciesAbilities = mysqlTable('species_abilities', {
+//
+// 🧠 ABILITIES
+//
+export const playableSpeciesAbilities = mysqlTable('playable_species_abilities', {
   id: varchar('id', { length: 36 }).primaryKey(),
   speciesId: varchar('species_id', { length: 36 }).notNull(),
   abilityName: varchar('ability_name', { length: 100 }).notNull(),
@@ -37,15 +44,19 @@ export const speciesAbilities = mysqlTable('species_abilities', {
   isPassive: boolean('is_passive').default(false),
 });
 
-// Species Tags
-export const speciesTags = mysqlTable('species_tags', {
+//
+// 🏷 TAGS
+//
+export const playableSpeciesTags = mysqlTable('playable_species_tags', {
   id: varchar('id', { length: 36 }).primaryKey(),
   speciesId: varchar('species_id', { length: 36 }).notNull(),
-  tag: varchar('tag', { length: 50 }), // e.g., 'aquatic', 'mystical', 'undead'
+  tag: varchar('tag', { length: 50 }),
 });
 
-// Species Lore (multi-paragraph entries, for encyclopedic entries or campaign info)
-export const speciesLore = mysqlTable('species_lore', {
+//
+// 📖 LORE ENTRIES
+//
+export const playableSpeciesLore = mysqlTable('playable_species_lore', {
   id: varchar('id', { length: 36 }).primaryKey(),
   speciesId: varchar('species_id', { length: 36 }).notNull(),
   loreEntry: text('lore_entry').notNull(),

@@ -6,7 +6,7 @@ import {
   createCharacterClassHandler,
   updateCharacterClassHandler,
   deleteCharacterClassHandler,
-} from '../controllers/adminCharacter.controller';
+} from '../controllers/adminPlayableClass.controller';
 
 /**
  * Character Management Admin Routes
@@ -23,7 +23,7 @@ import {
  * "We build not for today, but for tomorrow and beyond."
  */
 
-export async function characterAdminRoutes(app: FastifyInstance) {
+export async function playableAdminRoutes(app: FastifyInstance) {
   app.register(async function (admin) {
     // ✅ Global protection: JWT + manage_characters required
     admin.addHook('onRequest', async (request, reply) => {

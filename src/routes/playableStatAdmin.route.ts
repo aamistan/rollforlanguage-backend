@@ -7,7 +7,7 @@ import {
   updateStatHandler,
   deleteStatHandler,
   patchStatActiveHandler, // 🆕 soft-delete / restore
-} from '../controllers/adminCharacterStat.controller';
+} from '../controllers/adminPlayableStat.controller';
 
 /**
  * Character Stat Admin Routes
@@ -24,7 +24,7 @@ import {
  * "We build not for today, but for tomorrow and beyond."
  */
 
-export async function characterStatAdminRoutes(app: FastifyInstance) {
+export async function playableStatAdminRoutes(app: FastifyInstance) {
   app.register(async function (statRoutes) {
     statRoutes.addHook('onRequest', async (request, reply) => {
       await request.jwtVerify();

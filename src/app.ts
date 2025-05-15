@@ -15,10 +15,10 @@ import swaggerUi from '@fastify/swagger-ui';
 
 import { authRoutes } from './routes/auth.route';
 import { adminRoutes } from './routes/admin.route';
-import { characterAdminRoutes } from './routes/characterAdmin.route';
-import { characterTagAdminRoutes } from './routes/characterTagAdmin.route';
-import { characterStatAdminRoutes } from './routes/characterStatAdmin.route';
-import { characterPassiveAdminRoutes } from './routes/characterPassiveAdmin.route';
+import { playableAdminRoutes } from './routes/playableClassAdmin.route';
+import { playableTagAdminRoutes } from './routes/playableTagAdmin.route';
+import { playableStatAdminRoutes } from './routes/playableStatAdmin.route';
+import { playablePassiveAdminRoutes } from './routes/playablePassiveAdmin.route';
 import { mediaUploadRoutes } from './routes/mediaUpload.route';
 
 const app = Fastify({
@@ -50,10 +50,10 @@ app.addHook('onRequest', (request, reply, done) => {
 // 📦 Register routes
 app.register(authRoutes, { prefix: '/auth' });
 app.register(adminRoutes);
-app.register(characterAdminRoutes);
-app.register(characterTagAdminRoutes);
-app.register(characterStatAdminRoutes);
-app.register(characterPassiveAdminRoutes);
+app.register(playableAdminRoutes);
+app.register(playableTagAdminRoutes);
+app.register(playableStatAdminRoutes);
+app.register(playablePassiveAdminRoutes);
 app.register(mediaUploadRoutes);
 
 // 🧯 Global error handler
@@ -61,5 +61,5 @@ app.setErrorHandler((error, request, reply) => {
   app.log.error(`Global error handler caught: ${error.message}`);
   reply.status(500).send({ error: 'Internal Server Error', message: error.message });
 });
-// 
+
 export default app;

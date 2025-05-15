@@ -22,7 +22,7 @@ import {
  * "We build not for today, but for tomorrow and beyond."
  */
 
-export async function characterPassiveAdminRoutes(app: FastifyInstance) {
+export async function playablePassiveAdminRoutes(app: FastifyInstance) {
   app.register(async function (passiveRoutes) {
     passiveRoutes.addHook('onRequest', async (request, reply) => {
       await request.jwtVerify();

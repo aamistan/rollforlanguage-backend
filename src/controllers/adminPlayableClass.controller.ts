@@ -15,7 +15,7 @@ import {
   createCharacterClass,
   updateCharacterClass,
   deleteCharacterClass,
-} from '../services/characterClass.service';
+} from '../services/playableClass.service';
 
 /**
  * Admin Character Controller
