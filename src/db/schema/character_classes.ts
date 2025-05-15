@@ -46,7 +46,13 @@ export const classPassives = mysqlTable('class_passives', {
 export const classTags = mysqlTable('class_tags', {
   id: varchar('id', { length: 36 }).primaryKey(),
   name: varchar('name', { length: 50 }).notNull().unique(),
+  description: text('description'),
+  isActive: boolean('is_active').default(true),
+  sortOrder: int('sort_order').default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').onUpdateNow().defaultNow(),
 });
+
 
 export const classTagLinks = mysqlTable('class_tag_links', {
   id: varchar('id', { length: 36 }).primaryKey(),

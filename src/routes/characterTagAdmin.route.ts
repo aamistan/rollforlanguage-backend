@@ -6,6 +6,7 @@ import {
   createTagHandler,
   updateTagHandler,
   deleteTagHandler,
+  patchTagActiveHandler, // 🆕 Soft delete / restore
 } from '../controllers/adminCharacterTag.controller';
 
 /**
@@ -16,6 +17,7 @@ import {
  * 
  * Purpose:
  * - Enables frontend tag browsing, autocompletion, editing, and removal
+ * - Supports soft-deletion and reactivation of tags via isActive flag
  * - All endpoints are protected and require `manage_characters` permission
  * 
  * Development Mantra:
@@ -32,9 +34,13 @@ export async function characterTagAdminRoutes(app: FastifyInstance) {
       }
     });
 
+    // Core CRUD
     tagRoutes.get('/characters/tags', getAllTagsHandler);
     tagRoutes.post('/characters/tags', createTagHandler);
     tagRoutes.patch('/characters/tags/:id', updateTagHandler);
     tagRoutes.delete('/characters/tags/:id', deleteTagHandler);
+
+    // 🔁 Soft-delete and restore toggle
+    tagRoutes.patch('/characters/tags/:id/active', patchTagActiveHandler);
   }, { prefix: '/admin' });
 }
