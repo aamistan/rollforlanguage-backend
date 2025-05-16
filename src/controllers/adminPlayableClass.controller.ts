@@ -8,7 +8,7 @@ import {
   CreatePlayableClassInput,
   UpdatePlayableClassInput,
   GetPlayableClassesQuery,
-} from '../schemas/playable_classes.schema';
+} from '../schemas/playable_classes';
 
 import {
   getAllPlayableClasses,
