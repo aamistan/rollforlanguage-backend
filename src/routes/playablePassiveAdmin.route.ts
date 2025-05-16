@@ -6,7 +6,7 @@ import {
   createPassiveHandler,
   updatePassiveHandler,
   deletePassiveHandler,
-} from '../controllers/adminCharacterPassive.controller';
+} from '../controllers/adminPlayablePassive.controller';
 
 /**
  * Character Passive Admin Routes

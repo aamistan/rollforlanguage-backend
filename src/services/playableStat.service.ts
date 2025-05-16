@@ -1,7 +1,7 @@
 // src/services/characterStat.service.ts
 
 import { db } from '../db';
-import { classStatBonuses } from '../db/schema/character_classes';
+import { playableClassStatBonuses } from '../db/schema/playable_classes';
 import { playableStats } from '../db/schema/playable_stats';
 import { eq, count } from 'drizzle-orm';
 import { idGenerator } from '../utils/idGenerator';
@@ -10,7 +10,7 @@ export async function getAllStats(includeInactive = false) {
   const query = db
     .select()
     .from(playableStats)
-    .orderBy(playableStats.sortOrder, characterStats.displayName);
+    .orderBy(playableStats.sortOrder, playableStats.displayName);
 
   if (!includeInactive) {
     query.where(eq(playableStats.isActive, true));
@@ -77,8 +77,8 @@ export async function deleteStat(id: string): Promise<boolean> {
   // 🚫 Check if stat is in use
   const [{ count: usageCount }] = await db
     .select({ count: count() })
-    .from(classStatBonuses)
-    .where(eq(classStatBonuses.statName, id));
+    .from(playableClassStatBonuses)
+    .where(eq(playableClassStatBonuses.statName, id));
 
   if (usageCount > 0) {
     throw new Error('Stat is in use and cannot be deleted.');
@@ -91,6 +91,6 @@ export async function deleteStat(id: string): Promise<boolean> {
 
   if (!existing) return false;
 
-  await db.delete(playableStats).where(eq(characterStats.id, id));
+  await db.delete(playableStats).where(eq(playableStats.id, id));
   return true;
 }

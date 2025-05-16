@@ -8,7 +8,7 @@ import {
   deleteStat,
   getStatById,
   setStatActiveState,
-} from '../services/characterStat.service';
+} from '../services/playableStat.service';
 
 type StatQuery = { includeInactive?: string };
 

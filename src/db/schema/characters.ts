@@ -18,7 +18,7 @@ export const characters = mysqlTable('characters', {
 });
 
 // Character Stats table
-export const characterStats = mysqlTable('character_stats', {
+export const playableStats = mysqlTable('character_stats', {
   id: varchar('id', { length: 36 }).primaryKey(),
   characterId: varchar('character_id', { length: 36 }).notNull(),
   statName: varchar('stat_name', { length: 50 }).notNull(),  // e.g., strength, dexterity

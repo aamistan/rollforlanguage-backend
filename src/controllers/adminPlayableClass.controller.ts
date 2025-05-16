@@ -45,11 +45,11 @@ export async function getCharacterClassByIdHandler(
   reply: FastifyReply
 ) {
   const { id } = request.params;
-  const characterClass = await getCharacterClassById(id);
-  if (!characterClass) {
+  const playableClass = await getCharacterClassById(id);
+  if (!playableClass) {
     return reply.status(404).send({ error: 'Character class not found.' });
   }
-  return reply.send(characterClass);
+  return reply.send(playableClass);
 }
 
 // ➕ POST /admin/characters/classes

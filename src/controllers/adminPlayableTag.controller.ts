@@ -6,7 +6,7 @@ import {
   deleteTag,
   getTagById,
   setTagActiveState,
-} from '../services/characterTag.service';
+} from '../services/playableTag.service';
 
 // 🧾 Query type for GET /tags
 type TagQuery = { includeInactive?: string };

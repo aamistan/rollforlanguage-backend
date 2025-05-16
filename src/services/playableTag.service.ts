@@ -1,15 +1,15 @@
 // src/services/characterTag.service.ts
 
 import { db } from '../db';
-import { classTags, classTagLinks } from '../db/schema/character_classes';
+import { playableTags, playableClassTagLinks } from '../db/schema/playable_classes';
 import { eq, count } from 'drizzle-orm';
 import { idGenerator } from '../utils/idGenerator';
 
 export async function getAllTags(includeInactive = false) {
-  const query = db.select().from(classTags).orderBy(classTags.sortOrder, classTags.name);
+  const query = db.select().from(playableTags).orderBy(playableTags.sortOrder, playableTags.name);
 
   if (!includeInactive) {
-    query.where(eq(classTags.isActive, true));
+    query.where(eq(playableTags.isActive, true));
   }
 
   return await query;
@@ -18,8 +18,8 @@ export async function getAllTags(includeInactive = false) {
 export async function getTagById(id: string) {
   const [tag] = await db
     .select()
-    .from(classTags)
-    .where(eq(classTags.id, id));
+    .from(playableTags)
+    .where(eq(playableTags.id, id));
 
   return tag || null;
 }
@@ -28,7 +28,7 @@ export async function createTag(name: string, description?: string, sortOrder = 
   const id = idGenerator(36);
   const now = new Date();
 
-  await db.insert(classTags).values({
+  await db.insert(playableTags).values({
     id,
     name,
     description,
@@ -44,21 +44,21 @@ export async function createTag(name: string, description?: string, sortOrder = 
 export async function updateTag(id: string, updates: { name?: string; description?: string; sortOrder?: number }) {
   const now = new Date();
 
-  await db.update(classTags)
+  await db.update(playableTags)
     .set({
       ...updates,
       updatedAt: now,
     })
-    .where(eq(classTags.id, id));
+    .where(eq(playableTags.id, id));
 
   return await getTagById(id);
 }
 
 export async function setTagActiveState(id: string, isActive: boolean): Promise<boolean> {
   const result = await db
-    .update(classTags)
+    .update(playableTags)
     .set({ isActive, updatedAt: new Date() })
-    .where(eq(classTags.id, id));
+    .where(eq(playableTags.id, id));
 
   return !!result;
 }
@@ -66,21 +66,21 @@ export async function setTagActiveState(id: string, isActive: boolean): Promise<
 export async function deleteTag(id: string): Promise<boolean> {
   const [{ count: usageCount }] = await db
     .select({ count: count() })
-    .from(classTagLinks)
-    .where(eq(classTagLinks.tagId, id));
+    .from(playableClassTagLinks)
+    .where(eq(playableClassTagLinks.tagId, id));
 
   if (usageCount > 0) {
     throw new Error('Tag is in use and cannot be deleted.');
   }
 
   const [existing] = await db
-    .select({ id: classTags.id })
-    .from(classTags)
-    .where(eq(classTags.id, id));
+    .select({ id: playableTags.id })
+    .from(playableTags)
+    .where(eq(playableTags.id, id));
 
   if (!existing) return false;
 
-  await db.delete(classTags).where(eq(classTags.id, id));
+  await db.delete(playableTags).where(eq(playableTags.id, id));
   return true;
 }
 

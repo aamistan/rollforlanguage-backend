@@ -7,7 +7,7 @@ import {
   updatePassive,
   deletePassive,
   getPassiveById,
-} from '../services/characterPassive.service';
+} from '../services/playablePassive.service';
 
 export async function getAllPassivesHandler(request: FastifyRequest, reply: FastifyReply) {
   const passives = await getAllPassives();
