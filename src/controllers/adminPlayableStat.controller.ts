@@ -12,7 +12,7 @@ import {
 
 type StatQuery = { includeInactive?: string };
 
-// GET /admin/characters/stats
+// GET /admin/playable/stats
 export async function getAllStatsHandler(
   request: FastifyRequest<{ Querystring: StatQuery }>,
   reply: FastifyReply
@@ -22,7 +22,7 @@ export async function getAllStatsHandler(
   return reply.send(stats);
 }
 
-// POST /admin/characters/stats
+// POST /admin/playable/stats
 export async function createStatHandler(request: FastifyRequest, reply: FastifyReply) {
   const { name, displayName, description, sortOrder } = request.body as {
     name: string;
@@ -39,7 +39,7 @@ export async function createStatHandler(request: FastifyRequest, reply: FastifyR
   return reply.status(201).send(stat);
 }
 
-// PATCH /admin/characters/stats/:id
+// PATCH /admin/playable/stats/:id
 export async function updateStatHandler(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string };
   const { name, displayName, description, sortOrder } = request.body as {
@@ -58,7 +58,7 @@ export async function updateStatHandler(request: FastifyRequest, reply: FastifyR
   return reply.send(updated);
 }
 
-// PATCH /admin/characters/stats/:id/active
+// PATCH /admin/playable/stats/:id/active
 export async function patchStatActiveHandler(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string };
   const { isActive } = request.body as { isActive?: boolean };
@@ -75,7 +75,7 @@ export async function patchStatActiveHandler(request: FastifyRequest, reply: Fas
   return reply.send({ success: true });
 }
 
-// DELETE /admin/characters/stats/:id
+// DELETE /admin/playable/stats/:id
 export async function deleteStatHandler(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string };
 

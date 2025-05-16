@@ -1,21 +1,21 @@
-// src/routes/admin/characterAdmin.route.ts
+// src/routes/playableClassAdmin.route.ts
 import { FastifyInstance } from 'fastify';
 import {
-  getAllCharacterClassesHandler,
-  getCharacterClassByIdHandler,
-  createCharacterClassHandler,
-  updateCharacterClassHandler,
-  deleteCharacterClassHandler,
+  getAllPlayableClassesHandler,
+  getPlayableClassByIdHandler,
+  createPlayableClassHandler,
+  updatePlayableClassHandler,
+  deletePlayableClassHandler,
 } from '../controllers/adminPlayableClass.controller';
 
 /**
- * Character Management Admin Routes
+ * Playable Class Management Admin Routes
  * 
  * Related Documentation:
  * /docs/backend/character-management-api.md
  * 
  * Purpose:
- * - Registers all admin endpoints for managing RPG character classes
+ * - Registers all admin endpoints for managing RPG playable classes
  * - Applies permission-based access control for `manage_characters`
  * - Powers dashboard CRUD operations, filters, and summaries
  * 
@@ -23,7 +23,7 @@ import {
  * "We build not for today, but for tomorrow and beyond."
  */
 
-export async function playableAdminRoutes(app: FastifyInstance) {
+export async function playableClassAdminRoutes(app: FastifyInstance) {
   app.register(async function (admin) {
     // ✅ Global protection: JWT + manage_characters required
     admin.addHook('onRequest', async (request, reply) => {
@@ -39,19 +39,19 @@ export async function playableAdminRoutes(app: FastifyInstance) {
       }
     });
 
-    // 🧾 GET /admin/characters/classes — paginated list
-    admin.get('/classes', getAllCharacterClassesHandler);
+    // 🧾 GET /admin/playable/classes — paginated list
+    admin.get('/classes', getAllPlayableClassesHandler);
 
-    // 🔍 GET /admin/characters/classes/:id — get single class
-    admin.get('/classes/:id', getCharacterClassByIdHandler);
+    // 🔍 GET /admin/playable/classes/:id — get single class
+    admin.get('/classes/:id', getPlayableClassByIdHandler);
 
-    // ➕ POST /admin/characters/classes — create new class
-    admin.post('/classes', createCharacterClassHandler);
+    // ➕ POST /admin/playable/classes — create new class
+    admin.post('/classes', createPlayableClassHandler);
 
-    // ✏️ PATCH /admin/characters/classes/:id — update class
-    admin.patch('/classes/:id', updateCharacterClassHandler);
+    // ✏️ PATCH /admin/playable/classes/:id — update class
+    admin.patch('/classes/:id', updatePlayableClassHandler);
 
-    // ❌ DELETE /admin/characters/classes/:id — delete class
-    admin.delete('/classes/:id', deleteCharacterClassHandler);
-  }, { prefix: '/admin/characters' });
+    // ❌ DELETE /admin/playable/classes/:id — delete class
+    admin.delete('/classes/:id', deletePlayableClassHandler);
+  }, { prefix: '/admin/playable' });
 }

@@ -34,12 +34,12 @@ export async function playableStatAdminRoutes(app: FastifyInstance) {
       }
     });
 
-    statRoutes.get('/characters/stats', getAllStatsHandler);
-    statRoutes.post('/characters/stats', createStatHandler);
-    statRoutes.patch('/characters/stats/:id', updateStatHandler);
-    statRoutes.delete('/characters/stats/:id', deleteStatHandler);
+    statRoutes.get('/playable/stats', getAllStatsHandler);
+    statRoutes.post('/playable/stats', createStatHandler);
+    statRoutes.patch('/playable/stats/:id', updateStatHandler);
+    statRoutes.delete('/playable/stats/:id', deleteStatHandler);
 
     // 🔁 Soft-delete and restore toggle
-    statRoutes.patch('/characters/stats/:id/active', patchStatActiveHandler);
+    statRoutes.patch('/playable/stats/:id/active', patchStatActiveHandler);
   }, { prefix: '/admin' });
 }

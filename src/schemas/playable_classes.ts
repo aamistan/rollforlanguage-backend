@@ -1,4 +1,4 @@
-// src/schemas/adminCharacter.schema.ts
+// src/schemas/playable_classes.ts
 
 import { z } from 'zod';
 
@@ -27,7 +27,7 @@ export const statBonusesSchema = z.record(z.string().min(1), z.number()).optiona
 export const passiveAbilitiesSchema = z.array(z.string().min(1).max(100)).optional();
 
 // 🧾 Class creation schema
-export const createCharacterClassSchema = z.object({
+export const createPlayableClassSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().min(1_000).max(10_000).optional(),
   lore: z.string().max(25_000).optional(),
@@ -40,10 +40,10 @@ export const createCharacterClassSchema = z.object({
 });
 
 // ✏️ Class update schema
-export const updateCharacterClassSchema = createCharacterClassSchema.partial();
+export const updatePlayableClassSchema = createPlayableClassSchema.partial();
 
 // 🔍 Class list query params
-export const getCharacterClassesQuerySchema = z.object({
+export const getPlayableClassesQuerySchema = z.object({
   search: z.string().min(1).max(100).optional(),
 
   page: z.coerce.number().min(1).optional(),
@@ -54,6 +54,6 @@ export const getCharacterClassesQuerySchema = z.object({
 });
 
 // 🧠 Inferred types
-export type CreateCharacterClassInput = z.infer<typeof createCharacterClassSchema>;
-export type UpdateCharacterClassInput = z.infer<typeof updateCharacterClassSchema>;
-export type GetCharacterClassesQuery = z.infer<typeof getCharacterClassesQuerySchema>;
+export type CreatePlayableClassInput = z.infer<typeof createPlayableClassSchema>;
+export type UpdatePlayableClassInput = z.infer<typeof updatePlayableClassSchema>;
+export type GetPlayableClassesQuery = z.infer<typeof getPlayableClassesQuerySchema>;

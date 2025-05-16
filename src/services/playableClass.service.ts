@@ -1,4 +1,4 @@
-// src/services/characterClass.service.ts
+// src/services/playableClass.service.ts
 
 import { db } from '../db';
 import {
@@ -11,13 +11,13 @@ import {
 
 import { and, ilike, eq, sql, count, inArray } from 'drizzle-orm';
 import {
-  CreateCharacterClassInput,
-  UpdateCharacterClassInput,
-  GetCharacterClassesQuery,
-} from '../schemas/adminCharacter.schema';
+  CreatePlayableClassInput,
+  UpdatePlayableClassInput,
+  GetPlayableClassesQuery,
+} from '../schemas/playable_classes';
 import { idGenerator } from '../utils/idGenerator';
 
-export async function getAllCharacterClasses(query: GetCharacterClassesQuery) {
+export async function getAllPlayableClasses(query: GetPlayableClassesQuery) {
   const {
     search,
     page = 1,
@@ -139,7 +139,7 @@ export async function getAllCharacterClasses(query: GetCharacterClassesQuery) {
   };
 }
 
-export async function getCharacterClassById(id: string) {
+export async function getPlayableClassById(id: string) {
   const [base] = await db
     .select()
     .from(playableClasses)
@@ -186,7 +186,7 @@ export async function getCharacterClassById(id: string) {
   };
 }
 
-export async function createCharacterClass(input: CreateCharacterClassInput) {
+export async function createPlayableClass(input: CreatePlayableClassInput) {
   const now = new Date();
   const classId = idGenerator(36);
 
@@ -256,10 +256,10 @@ export async function createCharacterClass(input: CreateCharacterClassInput) {
   }
 
   // 5️⃣ Return hydrated class object
-  return await getCharacterClassById(classId);
+  return await getPlayableClassById(classId);
 }
 
-export async function updateCharacterClass(id: string, updates: UpdateCharacterClassInput) {
+export async function updatePlayableClass(id: string, updates: UpdatePlayableClassInput) {
   const now = new Date();
 
   // 1️⃣ Update base class fields
@@ -335,10 +335,10 @@ export async function updateCharacterClass(id: string, updates: UpdateCharacterC
   }
 
   // 5️⃣ Return hydrated object
-  return await getCharacterClassById(id);
+  return await getPlayableClassById(id);
 }
 
-export async function deleteCharacterClass(id: string): Promise<boolean> {
+export async function deletePlayableClass(id: string): Promise<boolean> {
   // 🧭 Check existence first
   const [existing] = await db
     .select({ id: playableClasses.id })

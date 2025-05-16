@@ -35,12 +35,12 @@ export async function playableTagAdminRoutes(app: FastifyInstance) {
     });
 
     // Core CRUD
-    tagRoutes.get('/characters/tags', getAllTagsHandler);
-    tagRoutes.post('/characters/tags', createTagHandler);
-    tagRoutes.patch('/characters/tags/:id', updateTagHandler);
-    tagRoutes.delete('/characters/tags/:id', deleteTagHandler);
+    tagRoutes.get('/playable/tags', getAllTagsHandler);
+    tagRoutes.post('/playable/tags', createTagHandler);
+    tagRoutes.patch('/playable/tags/:id', updateTagHandler);
+    tagRoutes.delete('/playable/tags/:id', deleteTagHandler);
 
     // 🔁 Soft-delete and restore toggle
-    tagRoutes.patch('/characters/tags/:id/active', patchTagActiveHandler);
+    tagRoutes.patch('/playable/tags/:id/active', patchTagActiveHandler);
   }, { prefix: '/admin' });
 }

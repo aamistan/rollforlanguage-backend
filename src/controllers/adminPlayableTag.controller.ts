@@ -11,7 +11,7 @@ import {
 // 🧾 Query type for GET /tags
 type TagQuery = { includeInactive?: string };
 
-// GET /admin/characters/tags
+// GET /admin/playable/tags
 export async function getAllTagsHandler(
   request: FastifyRequest<{ Querystring: TagQuery }>,
   reply: FastifyReply
@@ -21,7 +21,7 @@ export async function getAllTagsHandler(
   return reply.send(tags);
 }
 
-// POST /admin/characters/tags
+// POST /admin/playable/tags
 export async function createTagHandler(request: FastifyRequest, reply: FastifyReply) {
   const { name, description, sortOrder } = request.body as {
     name: string;
@@ -37,7 +37,7 @@ export async function createTagHandler(request: FastifyRequest, reply: FastifyRe
   return reply.status(201).send(tag);
 }
 
-// PATCH /admin/characters/tags/:id (update name/desc/sort)
+// PATCH /admin/playable/tags/:id (update name/desc/sort)
 export async function updateTagHandler(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string };
   const { name, description, sortOrder } = request.body as {
@@ -55,7 +55,7 @@ export async function updateTagHandler(request: FastifyRequest, reply: FastifyRe
   return reply.send(updated);
 }
 
-// PATCH /admin/characters/tags/:id (soft-delete / restore)
+// PATCH /admin/playable/tags/:id (soft-delete / restore)
 export async function patchTagActiveHandler(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string };
   const { isActive } = request.body as { isActive?: boolean };
@@ -72,7 +72,7 @@ export async function patchTagActiveHandler(request: FastifyRequest, reply: Fast
   return reply.send({ success: true });
 }
 
-// DELETE /admin/characters/tags/:id
+// DELETE /admin/playable/tags/:id
 export async function deleteTagHandler(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string };
 
