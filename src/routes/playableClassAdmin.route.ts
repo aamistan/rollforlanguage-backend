@@ -40,18 +40,18 @@ export async function playableClassAdminRoutes(app: FastifyInstance) {
     });
 
     // 🧾 GET /admin/playable/classes — paginated list
-    admin.get('/classes', getAllPlayableClassesHandler);
+    admin.get('/playable/classes', getAllPlayableClassesHandler);
 
     // 🔍 GET /admin/playable/classes/:id — get single class
-    admin.get('/classes/:id', getPlayableClassByIdHandler);
+    admin.get('/playable/classes/:id', getPlayableClassByIdHandler);
 
     // ➕ POST /admin/playable/classes — create new class
-    admin.post('/classes', createPlayableClassHandler);
+    admin.post('/playable/classes', createPlayableClassHandler);
 
     // ✏️ PATCH /admin/playable/classes/:id — update class
-    admin.patch('/classes/:id', updatePlayableClassHandler);
+    admin.patch('/playable/classes/:id', updatePlayableClassHandler);
 
     // ❌ DELETE /admin/playable/classes/:id — delete class
-    admin.delete('/classes/:id', deletePlayableClassHandler);
-  }, { prefix: '/admin/playable' });
+    admin.delete('/playable/classes/:id', deletePlayableClassHandler);
+  });
 }

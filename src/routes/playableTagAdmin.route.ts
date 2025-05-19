@@ -42,5 +42,5 @@ export async function playableTagAdminRoutes(app: FastifyInstance) {
 
     // 🔁 Soft-delete and restore toggle
     tagRoutes.patch('/playable/tags/:id/active', patchTagActiveHandler);
-  }, { prefix: '/admin' });
+  });
 }

@@ -49,11 +49,11 @@ app.addHook('onRequest', (request, reply, done) => {
 
 // 📦 Register routes
 app.register(authRoutes, { prefix: '/auth' });
-app.register(adminRoutes);
-app.register(playableClassAdminRoutes);
-app.register(playableTagAdminRoutes);
-app.register(playableStatAdminRoutes);
-app.register(playablePassiveAdminRoutes);
+app.register(adminRoutes, { prefix: '/auth' })
+app.register(playableClassAdminRoutes, { prefix: '/admin' });
+app.register(playableTagAdminRoutes, { prefix: '/admin' });
+app.register(playableStatAdminRoutes, { prefix: '/admin' });
+app.register(playablePassiveAdminRoutes, { prefix: '/admin' });
 app.register(mediaUploadRoutes);
 
 // 🧯 Global error handler

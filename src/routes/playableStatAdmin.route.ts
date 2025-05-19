@@ -41,5 +41,5 @@ export async function playableStatAdminRoutes(app: FastifyInstance) {
 
     // 🔁 Soft-delete and restore toggle
     statRoutes.patch('/playable/stats/:id/active', patchStatActiveHandler);
-  }, { prefix: '/admin' });
+  });
 }

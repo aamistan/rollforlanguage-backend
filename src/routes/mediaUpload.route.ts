@@ -61,5 +61,5 @@ export async function mediaUploadRoutes(app: FastifyInstance) {
 
       return reply.send({ url });
     });
-  }, { prefix: '/admin' });
+  });
 }

@@ -36,5 +36,5 @@ export async function playablePassiveAdminRoutes(app: FastifyInstance) {
     passiveRoutes.post('/playable/passives', createPassiveHandler);
     passiveRoutes.patch('/playable/passives/:id', updatePassiveHandler);
     passiveRoutes.delete('/playable/passives/:id', deletePassiveHandler);
-  }, { prefix: '/admin' });
+  });
 }

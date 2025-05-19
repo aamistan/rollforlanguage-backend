@@ -88,5 +88,5 @@ export async function adminRoutes(app: FastifyInstance) {
       },
       handler: getUserMetricsHandler,
     });
-  }, { prefix: '/admin' });
+  });
 }
