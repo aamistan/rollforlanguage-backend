@@ -1,4 +1,15 @@
+// src/controllers/adminPlayableTag.controller.ts
+
 import { FastifyRequest, FastifyReply } from 'fastify';
+import {
+  createPlayableTagSchema,
+  updatePlayableTagSchema,
+  getPlayableTagsQuerySchema,
+  CreatePlayableTagInput,
+  UpdatePlayableTagInput,
+  GetPlayableTagsQuery,
+} from '../schemas/playable_tags';
+
 import {
   getAllTags,
   createTag,
@@ -8,45 +19,46 @@ import {
   setTagActiveState,
 } from '../services/playableTag.service';
 
-// 🧾 Query type for GET /tags
-type TagQuery = { includeInactive?: string };
+/**
+ * Admin Playable Tag Controller
+ * 
+ * Purpose:
+ * - Validates and routes input for tag creation, editing, deletion
+ * - Supports color-coded classification
+ * - Powers admin dashboard tag modals and widgets
+ * 
+ * Development Mantra:
+ * "We build not for today, but for tomorrow and beyond."
+ */
 
-// GET /admin/playable/tags
+// 🔍 GET /admin/playable/tags
 export async function getAllTagsHandler(
-  request: FastifyRequest<{ Querystring: TagQuery }>,
+  request: FastifyRequest<{ Querystring: GetPlayableTagsQuery }>,
   reply: FastifyReply
 ) {
-  const includeInactive = request.query.includeInactive === 'true';
-  const tags = await getAllTags(includeInactive);
+  const query = getPlayableTagsQuerySchema.parse(request.query);
+  const tags = await getAllTags(query.includeInactive === true);
   return reply.send(tags);
 }
 
-// POST /admin/playable/tags
-export async function createTagHandler(request: FastifyRequest, reply: FastifyReply) {
-  const { name, description, sortOrder } = request.body as {
-    name: string;
-    description?: string;
-    sortOrder?: number;
-  };
-
-  if (!name || typeof name !== 'string') {
-    return reply.status(400).send({ error: 'Tag name is required.' });
-  }
-
-  const tag = await createTag(name, description, sortOrder);
+// ➕ POST /admin/playable/tags
+export async function createTagHandler(
+  request: FastifyRequest<{ Body: CreatePlayableTagInput }>,
+  reply: FastifyReply
+) {
+  const input = createPlayableTagSchema.parse(request.body);
+  const tag = await createTag(input);
   return reply.status(201).send(tag);
 }
 
-// PATCH /admin/playable/tags/:id (update name/desc/sort)
-export async function updateTagHandler(request: FastifyRequest, reply: FastifyReply) {
-  const { id } = request.params as { id: string };
-  const { name, description, sortOrder } = request.body as {
-    name?: string;
-    description?: string;
-    sortOrder?: number;
-  };
-
-  const updated = await updateTag(id, { name, description, sortOrder });
+// ✏️ PATCH /admin/playable/tags/:id
+export async function updateTagHandler(
+  request: FastifyRequest<{ Params: { id: string }; Body: UpdatePlayableTagInput }>,
+  reply: FastifyReply
+) {
+  const { id } = request.params;
+  const updates = updatePlayableTagSchema.parse(request.body);
+  const updated = await updateTag(id, updates);
 
   if (!updated) {
     return reply.status(404).send({ error: 'Tag not found.' });
@@ -55,10 +67,13 @@ export async function updateTagHandler(request: FastifyRequest, reply: FastifyRe
   return reply.send(updated);
 }
 
-// PATCH /admin/playable/tags/:id (soft-delete / restore)
-export async function patchTagActiveHandler(request: FastifyRequest, reply: FastifyReply) {
-  const { id } = request.params as { id: string };
-  const { isActive } = request.body as { isActive?: boolean };
+// 🔁 PATCH /admin/playable/tags/:id/active
+export async function patchTagActiveHandler(
+  request: FastifyRequest<{ Params: { id: string }; Body: { isActive?: boolean } }>,
+  reply: FastifyReply
+) {
+  const { id } = request.params;
+  const { isActive } = request.body;
 
   if (typeof isActive !== 'boolean') {
     return reply.status(400).send({ error: 'Missing or invalid isActive flag.' });
@@ -72,9 +87,12 @@ export async function patchTagActiveHandler(request: FastifyRequest, reply: Fast
   return reply.send({ success: true });
 }
 
-// DELETE /admin/playable/tags/:id
-export async function deleteTagHandler(request: FastifyRequest, reply: FastifyReply) {
-  const { id } = request.params as { id: string };
+// ❌ DELETE /admin/playable/tags/:id
+export async function deleteTagHandler(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
+  const { id } = request.params;
 
   try {
     const success = await deleteTag(id);

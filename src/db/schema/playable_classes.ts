@@ -42,19 +42,6 @@ export const playableClassPassives = mysqlTable('playable_class_passives', {
 });
 
 //
-// 🏷 TAGS (many-to-many glossary)
-//
-export const playableTags = mysqlTable('playable_tags', {
-  id: varchar('id', { length: 36 }).primaryKey(),
-  name: varchar('name', { length: 50 }).notNull().unique(),
-  description: text('description'),
-  isActive: boolean('is_active').default(true),
-  sortOrder: int('sort_order').default(0),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').onUpdateNow().defaultNow(),
-});
-
-//
 // 🧩 CLASS–TAG LINK (many-to-many join)
 //
 export const playableClassTagLinks = mysqlTable('playable_class_tag_links', {

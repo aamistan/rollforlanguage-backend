@@ -1,12 +1,28 @@
-// src/services/characterTag.service.ts
+// src/services/playableTag.service.ts
 
 import { db } from '../db';
-import { playableTags, playableClassTagLinks } from '../db/schema/playable_classes';
+import { playableClassTagLinks } from '../db/schema/playable_classes';
 import { eq, count } from 'drizzle-orm';
 import { idGenerator } from '../utils/idGenerator';
+import { CreatePlayableTagInput, UpdatePlayableTagInput, playableTags,  } from '../schemas/playable_tags';
 
+/**
+ * Tag Service
+ *
+ * Purpose:
+ * - Provides tag CRUD operations for the admin dashboard
+ * - Supports soft-deletion, color-coded classification, and sorting
+ *
+ * Development Mantra:
+ * "We build not for today, but for tomorrow and beyond."
+ */
+
+// GET all tags (optionally including inactive ones)
 export async function getAllTags(includeInactive = false) {
-  const query = db.select().from(playableTags).orderBy(playableTags.sortOrder, playableTags.name);
+  const query = db
+    .select()
+    .from(playableTags)
+    .orderBy(playableTags.sortOrder, playableTags.name);
 
   if (!includeInactive) {
     query.where(eq(playableTags.isActive, true));
@@ -15,6 +31,7 @@ export async function getAllTags(includeInactive = false) {
   return await query;
 }
 
+// GET tag by ID
 export async function getTagById(id: string) {
   const [tag] = await db
     .select()
@@ -24,7 +41,17 @@ export async function getTagById(id: string) {
   return tag || null;
 }
 
-export async function createTag(name: string, description?: string, sortOrder = 0) {
+// CREATE new tag
+export async function createTag(input: CreatePlayableTagInput) {
+  const {
+    name,
+    description,
+    sortOrder = 0,
+    colorHex = '#888888',
+    colorName,
+    isActive = true,
+  } = input;
+
   const id = idGenerator(36);
   const now = new Date();
 
@@ -33,18 +60,22 @@ export async function createTag(name: string, description?: string, sortOrder = 
     name,
     description,
     sortOrder,
-    isActive: true,
+    colorHex,
+    colorName,
+    isActive,
     createdAt: now,
     updatedAt: now,
   });
 
-  return { id, name, description, sortOrder };
+  return { id, name, description, sortOrder, colorHex, colorName, isActive };
 }
 
-export async function updateTag(id: string, updates: { name?: string; description?: string; sortOrder?: number }) {
+// UPDATE tag
+export async function updateTag(id: string, updates: UpdatePlayableTagInput) {
   const now = new Date();
 
-  await db.update(playableTags)
+  await db
+    .update(playableTags)
     .set({
       ...updates,
       updatedAt: now,
@@ -54,6 +85,7 @@ export async function updateTag(id: string, updates: { name?: string; descriptio
   return await getTagById(id);
 }
 
+// SET active/inactive
 export async function setTagActiveState(id: string, isActive: boolean): Promise<boolean> {
   const result = await db
     .update(playableTags)
@@ -63,6 +95,7 @@ export async function setTagActiveState(id: string, isActive: boolean): Promise<
   return !!result;
 }
 
+// DELETE tag (only if not in use)
 export async function deleteTag(id: string): Promise<boolean> {
   const [{ count: usageCount }] = await db
     .select({ count: count() })
@@ -83,4 +116,3 @@ export async function deleteTag(id: string): Promise<boolean> {
   await db.delete(playableTags).where(eq(playableTags.id, id));
   return true;
 }
-
