@@ -1,4 +1,3 @@
-// src/services/characterPassive.service.ts
 
 import { db } from '../db';
 import { playablePassives } from '../db/schema/playable_passives';

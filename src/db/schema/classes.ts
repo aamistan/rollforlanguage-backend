@@ -1,4 +1,3 @@
-// src/db/schema/classes.ts
 
 import {
   mysqlTable,

@@ -1,4 +1,3 @@
-// src/services/characterStat.service.ts
 
 import { db } from '../db';
 import { playableClassStatBonuses } from '../db/schema/playable_classes';

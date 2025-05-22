@@ -1,4 +1,3 @@
-// src/routes/characterStatAdmin.route.ts
 
 import { FastifyInstance } from 'fastify';
 import {

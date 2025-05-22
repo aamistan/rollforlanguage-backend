@@ -1,4 +1,3 @@
-// src/routes/characterPassiveAdmin.route.ts
 
 import { FastifyInstance } from 'fastify';
 import {

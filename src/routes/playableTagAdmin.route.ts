@@ -1,4 +1,3 @@
-// src/routes/characterTagAdmin.route.ts
 
 import { FastifyInstance } from 'fastify';
 import {
