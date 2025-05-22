@@ -20,6 +20,7 @@ import { playableTagAdminRoutes } from './routes/playableTagAdmin.route';
 import { playableStatAdminRoutes } from './routes/playableStatAdmin.route';
 import { playablePassiveAdminRoutes } from './routes/playablePassiveAdmin.route';
 import { mediaUploadRoutes } from './routes/mediaUpload.route';
+import { playableTagCategoryAdminRoutes } from './routes/playableTagCategoryAdmin.route';
 
 const app = Fastify({
   logger: true,
@@ -55,6 +56,8 @@ app.register(playableTagAdminRoutes, { prefix: '/admin' });
 app.register(playableStatAdminRoutes, { prefix: '/admin' });
 app.register(playablePassiveAdminRoutes, { prefix: '/admin' });
 app.register(mediaUploadRoutes);
+app.register(playableTagCategoryAdminRoutes, { prefix: '/admin' });
+
 
 // 🧯 Global error handler
 app.setErrorHandler((error, request, reply) => {
