@@ -1,5 +1,5 @@
 // src/services/auth.service.ts
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { db } from '../db';
 import { users } from '../db/schema/core';
 import { idGenerator } from '../utils/idGenerator';
