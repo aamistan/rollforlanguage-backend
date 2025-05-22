@@ -5,9 +5,10 @@ import {
   playableClasses,
   playableClassStatBonuses,
   playableClassPassives,
-  playableTags,
   playableClassTagLinks,
 } from '../db/schema/playable_classes';
+import { playableTags } from '../db/schema/playable_tags';
+
 
 import { and, ilike, eq, sql, count, inArray } from 'drizzle-orm';
 import {
